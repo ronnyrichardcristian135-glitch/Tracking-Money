@@ -1,175 +1,288 @@
 <!doctype html>
 <html lang="id">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Tracking Money — Cristian & Maharani</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-
-  <style>
-    :root {
-      --bg: #0f172a;
-      --card: #1e293b;
-      --text: #f1f5f9;
-      --primary: #3b82f6;
-      --success: #10b981;
-      --danger: #ef4444;
-      --radius: 16px;
-    }
-
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      margin: 0;
-      padding: 0;
-    }
-
-    header {
-      background: var(--primary);
-      color: white;
-      text-align: center;
-      padding: 1rem;
-      font-size: 1.3rem;
-      font-weight: 600;
-    }
-
-    main {
-      padding: 1rem;
-      display: grid;
-      gap: 1rem;
-    }
-
-    .card {
-      background: var(--card);
-      border-radius: var(--radius);
-      padding: 1rem;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
-    }
-
-    input, select, button {
-      font-family: inherit;
-      font-size: 1rem;
-      padding: 0.5rem;
-      border-radius: var(--radius);
-      border: 1px solid #334155;
-      background: #0f172a;
-      color: var(--text);
-    }
-
-    button {
-      background: var(--primary);
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-
-    button:hover { opacity: 0.9; }
-
-    .flex { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-
-    .green { color: var(--success); }
-    .red { color: var(--danger); }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tracking Money — Cristian & Maharani</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f172a;
+    --card: #1e293b;
+    --text: #f1f5f9;
+    --primary: #3b82f6;
+    --success: #10b981;
+    --danger: #ef4444;
+    --radius: 14px;
+  }
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    margin: 0;
+  }
+  header {
+    background: var(--primary);
+    padding: 1rem;
+    text-align: center;
+    font-size: 1.3rem;
+    font-weight: 600;
+  }
+  nav {
+    display: flex;
+    background: #1e293b;
+  }
+  nav button {
+    flex: 1;
+    padding: 0.7rem;
+    border: none;
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+    font-size: 1rem;
+  }
+  nav button.active {
+    background: var(--primary);
+  }
+  main { padding: 1rem; }
+  .card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+  input, select, button {
+    font-family: inherit;
+    border-radius: var(--radius);
+    border: 1px solid #334155;
+    padding: 0.5rem;
+    background: #0f172a;
+    color: var(--text);
+  }
+  button {
+    background: var(--primary);
+    border: none;
+    cursor: pointer;
+  }
+  button:hover { opacity: 0.9; }
+  .flex { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  ul { list-style: none; padding: 0; }
+  li { margin-bottom: 0.3rem; }
+  .red { color: var(--danger); }
+  .green { color: var(--success); }
+</style>
 </head>
-
 <body>
-  <header>Tracking Money — Cristian & Maharani</header>
+<header>Tracking Money — Cristian & Maharani</header>
 
-  <main>
+<nav>
+  <button class="active" data-tab="penghasilan">Penghasilan</button>
+  <button data-tab="tabungan">Tabungan</button>
+  <button data-tab="pengeluaran">Pengeluaran</button>
+  <button data-tab="hutang">Hutang Aktif</button>
+</nav>
+
+<main>
+  <!-- Penghasilan -->
+  <section id="penghasilan" class="tab">
     <div class="card">
-      <h3>Input Transaksi</h3>
+      <h3>Ringkasan Cepat</h3>
+      <p>Pemasukan Cristian: <span id="sumPemasukanCristian">0</span></p>
+      <p>Pemasukan Maharani: <span id="sumPemasukanMaharani">0</span></p>
+    </div>
+    <div class="card">
+      <h3>Input Penghasilan</h3>
       <div class="flex">
-        <select id="nama">
+        <select id="namaPemasukan">
           <option value="Cristian">Cristian</option>
           <option value="Maharani">Maharani</option>
         </select>
-        <select id="jenis">
-          <option value="pemasukan">Pemasukan</option>
-          <option value="pengeluaran">Pengeluaran</option>
-          <option value="tabungan">Tabungan</option>
-        </select>
-        <input type="number" id="jumlah" placeholder="Jumlah (Rp)" />
-        <button id="btnTambah">Tambah</button>
+        <input type="text" id="nominalPemasukan" placeholder="Nominal (Rp)">
+        <input type="text" id="ketPemasukan" placeholder="Keterangan">
+        <button id="tambahPemasukan">Tambah</button>
       </div>
     </div>
-
     <div class="card">
-      <h3>Ringkasan</h3>
-      <p>Cristian — Pemasukan: <span id="pemasukanCristian">0</span> | Tabungan: <span id="tabunganCristian">0</span> | Sisa: <span id="sisaCristian">0</span></p>
-      <p>Maharani — Pemasukan: <span id="pemasukanMaharani">0</span> | Tabungan: <span id="tabunganMaharani">0</span> | Sisa: <span id="sisaMaharani">0</span></p>
+      <h3>Riwayat Penghasilan</h3>
+      <ul id="historyPemasukan"></ul>
     </div>
+  </section>
 
+  <!-- Tabungan -->
+  <section id="tabungan" class="tab" style="display:none">
     <div class="card">
-      <h3>Riwayat</h3>
-      <ul id="riwayat"></ul>
+      <h3>Ringkasan Cepat</h3>
+      <p>Tabungan Tetap: <span id="sumTabunganTetap">0</span></p>
+      <p>Tabungan Bersama: <span id="sumTabunganBersama">0</span></p>
     </div>
-  </main>
+    <div class="card">
+      <h3>Input Tabungan</h3>
+      <div class="flex">
+        <select id="jenisTabungan">
+          <option value="Tetap">Tetap</option>
+          <option value="Bersama">Bersama</option>
+        </select>
+        <select id="namaTabungan">
+          <option value="Cristian">Cristian</option>
+          <option value="Maharani">Maharani</option>
+        </select>
+        <input type="text" id="nominalTabungan" placeholder="Nominal (Rp)">
+        <input type="text" id="ketTabungan" placeholder="Keterangan">
+        <button id="tambahTabungan">Tambah</button>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Riwayat Tabungan</h3>
+      <ul id="historyTabungan"></ul>
+    </div>
+  </section>
 
-  <script>
-    // Pastikan tidak ada deklarasi ganda
-    if (!window.dataKeuangan) {
-      window.dataKeuangan = {
-        data: JSON.parse(localStorage.getItem("data")) || [],
-        tabungan: JSON.parse(localStorage.getItem("tabungan")) || { Cristian: 0, Maharani: 0 }
-      };
-    }
+  <!-- Pengeluaran -->
+  <section id="pengeluaran" class="tab" style="display:none">
+    <div class="card">
+      <h3>Ringkasan Cepat</h3>
+      <p>Pengeluaran Bersama: <span id="sumPengeluaran">0</span></p>
+    </div>
+    <div class="card">
+      <h3>Input Pengeluaran</h3>
+      <div class="flex">
+        <select id="sumberPengeluaran">
+          <option value="Cristian">Pemasukan Cristian</option>
+          <option value="Maharani">Pemasukan Maharani</option>
+          <option value="Bersama">Tabungan Bersama</option>
+        </select>
+        <input type="text" id="nominalPengeluaran" placeholder="Nominal (Rp)">
+        <input type="text" id="ketPengeluaran" placeholder="Keterangan">
+        <button id="tambahPengeluaran">Tambah</button>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Riwayat Pengeluaran</h3>
+      <ul id="historyPengeluaran"></ul>
+    </div>
+  </section>
 
-    const { data, tabungan } = window.dataKeuangan;
+  <!-- Hutang -->
+  <section id="hutang" class="tab" style="display:none">
+    <div class="card">
+      <h3>Hutang Aktif</h3>
+      <div class="flex">
+        <select id="namaHutang">
+          <option value="Cristian">Cristian</option>
+          <option value="Maharani">Maharani</option>
+          <option value="Bersama">Bersama</option>
+        </select>
+        <input type="text" id="nominalHutang" placeholder="Nominal (Rp)">
+        <input type="date" id="jatuhTempo">
+        <input type="text" id="ketHutang" placeholder="Keterangan">
+        <button id="tambahHutang">Tambah</button>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Riwayat Hutang</h3>
+      <ul id="historyHutang"></ul>
+    </div>
+  </section>
+</main>
 
-    document.getElementById("btnTambah").addEventListener("click", () => {
-      const nama = document.getElementById("nama").value;
-      const jenis = document.getElementById("jenis").value;
-      const jumlah = parseInt(document.getElementById("jumlah").value || 0);
+<script>
+function formatRp(x){
+  return "Rp " + (x || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
+function loadData(k){ return JSON.parse(localStorage.getItem(k)) || []; }
+function saveData(k,v){ localStorage.setItem(k, JSON.stringify(v)); }
 
-      if (!jumlah || jumlah <= 0) {
-        alert("Masukkan jumlah yang valid");
-        return;
-      }
+const data = {
+  pemasukan: loadData('pemasukan'),
+  tabungan: loadData('tabungan'),
+  pengeluaran: loadData('pengeluaran'),
+  hutang: loadData('hutang')
+};
 
-      data.push({ nama, jenis, jumlah, waktu: new Date().toLocaleString() });
-      localStorage.setItem("data", JSON.stringify(data));
+// Navigasi tab
+document.querySelectorAll('nav button').forEach(btn=>{
+  btn.onclick=()=>{
+    document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.tab').forEach(tab=>tab.style.display='none');
+    document.getElementById(btn.dataset.tab).style.display='block';
+  }
+});
 
-      if (jenis === "tabungan") {
-        tabungan[nama] += jumlah;
-        localStorage.setItem("tabungan", JSON.stringify(tabungan));
-      }
+// Tambah Penghasilan
+document.getElementById('tambahPemasukan').onclick=()=>{
+  const nama=document.getElementById('namaPemasukan').value;
+  const nominal=parseInt(document.getElementById('nominalPemasukan').value.replace(/\D/g,''))||0;
+  const ket=document.getElementById('ketPemasukan').value;
+  data.pemasukan.push({nama,nominal,ket,waktu:new Date().toLocaleString()});
+  saveData('pemasukan',data.pemasukan);
+  updateAll();
+};
 
-      document.getElementById("jumlah").value = "";
-      updateUI();
-    });
+// Tambah Tabungan
+document.getElementById('tambahTabungan').onclick=()=>{
+  const jenis=document.getElementById('jenisTabungan').value;
+  const nama=document.getElementById('namaTabungan').value;
+  const nominal=parseInt(document.getElementById('nominalTabungan').value.replace(/\D/g,''))||0;
+  const ket=document.getElementById('ketTabungan').value;
+  data.tabungan.push({jenis,nama,nominal,ket,waktu:new Date().toLocaleString()});
+  saveData('tabungan',data.tabungan);
+  updateAll();
+};
 
-    function updateUI() {
-      let pemasukan = { Cristian: 0, Maharani: 0 };
-      let pengeluaran = { Cristian: 0, Maharani: 0 };
+// Tambah Pengeluaran
+document.getElementById('tambahPengeluaran').onclick=()=>{
+  const sumber=document.getElementById('sumberPengeluaran').value;
+  const nominal=parseInt(document.getElementById('nominalPengeluaran').value.replace(/\D/g,''))||0;
+  const ket=document.getElementById('ketPengeluaran').value;
+  data.pengeluaran.push({sumber,nominal,ket,waktu:new Date().toLocaleString()});
+  saveData('pengeluaran',data.pengeluaran);
+  updateAll();
+};
 
-      data.forEach(i => {
-        if (i.jenis === "pemasukan") pemasukan[i.nama] += i.jumlah;
-        else if (i.jenis === "pengeluaran") pengeluaran[i.nama] += i.jumlah;
-      });
+// Tambah Hutang
+document.getElementById('tambahHutang').onclick=()=>{
+  const nama=document.getElementById('namaHutang').value;
+  const nominal=parseInt(document.getElementById('nominalHutang').value.replace(/\D/g,''))||0;
+  const tempo=document.getElementById('jatuhTempo').value;
+  const ket=document.getElementById('ketHutang').value;
+  data.hutang.push({nama,nominal,tempo,ket,waktu:new Date().toLocaleString()});
+  saveData('hutang',data.hutang);
+  updateAll();
+};
 
-      const sisaC = pemasukan.Cristian - pengeluaran.Cristian - tabungan.Cristian;
-      const sisaM = pemasukan.Maharani - pengeluaran.Maharani - tabungan.Maharani;
+function updateAll(){
+  const cP=data.pemasukan.filter(i=>i.nama=="Cristian").reduce((a,b)=>a+b.nominal,0);
+  const mP=data.pemasukan.filter(i=>i.nama=="Maharani").reduce((a,b)=>a+b.nominal,0);
+  document.getElementById('sumPemasukanCristian').innerText=formatRp(cP);
+  document.getElementById('sumPemasukanMaharani').innerText=formatRp(mP);
 
-      document.getElementById("pemasukanCristian").textContent = pemasukan.Cristian.toLocaleString();
-      document.getElementById("pemasukanMaharani").textContent = pemasukan.Maharani.toLocaleString();
-      document.getElementById("tabunganCristian").textContent = tabungan.Cristian.toLocaleString();
-      document.getElementById("tabunganMaharani").textContent = tabungan.Maharani.toLocaleString();
-      document.getElementById("sisaCristian").textContent = sisaC.toLocaleString();
-      document.getElementById("sisaMaharani").textContent = sisaM.toLocaleString();
+  const tTetap=data.tabungan.filter(i=>i.jenis=="Tetap").reduce((a,b)=>a+b.nominal,0);
+  const tBersama=data.tabungan.filter(i=>i.jenis=="Bersama").reduce((a,b)=>a+b.nominal,0);
+  document.getElementById('sumTabunganTetap').innerText=formatRp(tTetap);
+  document.getElementById('sumTabunganBersama').innerText=formatRp(tBersama);
 
-      const riwayat = document.getElementById("riwayat");
-      riwayat.innerHTML = "";
-      data.slice().reverse().forEach(item => {
-        const li = document.createElement("li");
-        li.textContent = `${item.waktu} — ${item.nama} ${item.jenis} Rp${item.jumlah.toLocaleString()}`;
-        li.className = item.jenis === "pemasukan" ? "green" :
-                       item.jenis === "pengeluaran" ? "red" : "";
-        riwayat.appendChild(li);
-      });
-    }
+  const pTot=data.pengeluaran.reduce((a,b)=>a+b.nominal,0);
+  document.getElementById('sumPengeluaran').innerText=formatRp(pTot);
 
-    updateUI();
-  </script>
+  const el=(id,arr)=>
+    document.getElementById(id).innerHTML=arr.slice().reverse().map((x,i)=>
+      `<li>${x.waktu} — ${x.ket||''} (${formatRp(x.nominal)}) <button onclick="hapusItem('${id}',${i})">❌</button></li>`
+    ).join('');
+  el('historyPemasukan',data.pemasukan);
+  el('historyTabungan',data.tabungan);
+  el('historyPengeluaran',data.pengeluaran);
+  el('historyHutang',data.hutang);
+}
+
+function hapusItem(tipe,i){
+  const key=tipe.replace('history','').toLowerCase();
+  data[key].splice(i,1);
+  saveData(key,data[key]);
+  updateAll();
+}
+
+updateAll();
+</script>
 </body>
 </html>

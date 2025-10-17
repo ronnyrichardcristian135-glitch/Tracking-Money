@@ -75,7 +75,7 @@ nav button.active { background:var(--accent); color:#fff; }
       <label>Nama</label>
       <select id="input-penghasilan-nama"><option value="Cristian">Cristian</option><option value="Maharani">Maharani</option></select>
       <label>Nominal</label>
-      <input type="number" id="input-penghasilan-nominal" placeholder="1000000">
+      <input type="text" id="input-penghasilan-nominal" placeholder="1.000.000">
       <label>Keterangan</label>
       <textarea id="input-penghasilan-ket" rows="2"></textarea>
       <button onclick="addPenghasilan()">Tambah</button>
@@ -101,7 +101,7 @@ nav button.active { background:var(--accent); color:#fff; }
       </div>
 
       <label>Nominal</label>
-      <input type="number" id="input-tabungan-nominal" placeholder="1000000">
+      <input type="text" id="input-tabungan-nominal" placeholder="1.000.000">
 
       <label>Keterangan</label>
       <textarea id="input-tabungan-ket" rows="2"></textarea>
@@ -117,7 +117,7 @@ nav button.active { background:var(--accent); color:#fff; }
       <label>Sumber Dana</label>
       <select id="input-pengeluaran-sumber"><option value="Cristian">Pemasukan Cristian</option><option value="Maharani">Pemasukan Maharani</option><option value="Bersama">Tabungan Bersama</option></select>
       <label>Nominal</label>
-      <input type="number" id="input-pengeluaran-nominal" placeholder="1000000">
+      <input type="text" id="input-pengeluaran-nominal" placeholder="1.000.000">
       <label>Keterangan</label>
       <textarea id="input-pengeluaran-ket" rows="2"></textarea>
       <button onclick="addPengeluaran()">Tambah</button>
@@ -131,7 +131,7 @@ nav button.active { background:var(--accent); color:#fff; }
       <label>Nama</label>
       <select id="input-hutang-nama"><option value="Cristian">Cristian</option><option value="Maharani">Maharani</option><option value="Bersama">Bersama</option></select>
       <label>Nominal</label>
-      <input type="number" id="input-hutang-nominal" placeholder="1000000">
+      <input type="text" id="input-hutang-nominal" placeholder="1.000.000">
       <label>Tanggal Jatuh Tempo</label>
       <input type="date" id="input-hutang-tgl">
       <label>Keterangan</label>
@@ -167,32 +167,114 @@ let dataPenghasilan=[], dataTabungan=[], dataPengeluaran=[], dataHutang=[];
 // Format Rupiah
 function formatRupiah(num){return 'Rp'+Number(num).toLocaleString('id-ID');}
 
+// Format Input Ribuan saat mengetik
+function formatInputRibuan(input){
+  let val = input.value.replace(/\D/g,'');
+  if(val!==''){
+    input.value = Number(val).toLocaleString('id-ID');
+  } else { input.value=''; }
+}
+
+// Tambahkan listener input ribuan
+['input-penghasilan-nominal','input-tabungan-nominal','input-pengeluaran-nominal','input-hutang-nominal'].forEach(id=>{
+  document.getElementById(id).addEventListener('input',()=>formatInputRibuan(document.getElementById(id)));
+});
+
 // Tambah Data
-function addPenghasilan(){const nama=document.getElementById('input-penghasilan-nama').value;const nominal=Number(document.getElementById('input-penghasilan-nominal').value);const ket=document.getElementById('input-penghasilan-ket').value;const id=Date.now();dataPenghasilan.push({id,nama,nominal,ket});renderHistory('penghasilan');updateSummary();}
-function addTabungan(){const jenis=document.getElementById('input-tabungan-jenis').value;const nama=jenis==='Tetap'?document.getElementById('input-tabungan-nama').value:'Bersama';const nominal=Number(document.getElementById('input-tabungan-nominal').value);const ket=document.getElementById('input-tabungan-ket').value;const id=Date.now();dataTabungan.push({id,jenis,nama,nominal,ket});renderHistory('tabungan');updateSummary();}
-function addPengeluaran(){const sumber=document.getElementById('input-pengeluaran-sumber').value;const nominal=Number(document.getElementById('input-pengeluaran-nominal').value);const ket=document.getElementById('input-pengeluaran-ket').value;const id=Date.now();dataPengeluaran.push({id,sumber,nominal,ket});renderHistory('pengeluaran');updateSummary();}
-function addHutang(){const nama=document.getElementById('input-hutang-nama').value;const nominal=Number(document.getElementById('input-hutang-nominal').value);const tgl=document.getElementById('input-hutang-tgl').value;const ket=document.getElementById('input-hutang-ket').value;const id=Date.now();dataHutang.push({id,nama,nominal,tgl,ket,pembayaran:[]});renderHistory('hutang');updateSummary();}
+function getNumber(inputId){ return Number(document.getElementById(inputId).value.replace(/\./g,''))||0; }
+
+function addPenghasilan(){
+  const nama=document.getElementById('input-penghasilan-nama').value;
+  const nominal=getNumber('input-penghasilan-nominal');
+  const ket=document.getElementById('input-penghasilan-ket').value;
+  const id=Date.now();
+  dataPenghasilan.push({id,nama,nominal,ket});
+  renderHistory('penghasilan');updateSummary();
+}
+function addTabungan(){
+  const jenis=document.getElementById('input-tabungan-jenis').value;
+  const nama=jenis==='Tetap'?document.getElementById('input-tabungan-nama').value:'Bersama';
+  const nominal=getNumber('input-tabungan-nominal');
+  const ket=document.getElementById('input-tabungan-ket').value;
+  const id=Date.now();
+  dataTabungan.push({id,jenis,nama,nominal,ket});
+  renderHistory('tabungan');updateSummary();
+}
+function addPengeluaran(){
+  const sumber=document.getElementById('input-pengeluaran-sumber').value;
+  const nominal=getNumber('input-pengeluaran-nominal');
+  const ket=document.getElementById('input-pengeluaran-ket').value;
+  const id=Date.now();
+  dataPengeluaran.push({id,sumber,nominal,ket});
+  renderHistory('pengeluaran');updateSummary();
+}
+function addHutang(){
+  const nama=document.getElementById('input-hutang-nama').value;
+  const nominal=getNumber('input-hutang-nominal');
+  const tgl=document.getElementById('input-hutang-tgl').value;
+  const ket=document.getElementById('input-hutang-ket').value;
+  const id=Date.now();
+  dataHutang.push({id,nama,nominal,tgl,ket,pembayaran:[]});
+  renderHistory('hutang');updateSummary();
+}
 
 // Render History
 function renderHistory(section){
   let container;
-  if(section==='penghasilan'){container=document.getElementById('history-penghasilan');container.innerHTML='';dataPenghasilan.forEach(d=>{const div=document.createElement('div');div.className='history-item';div.innerHTML=`<div class="history-item-main"><span>${d.nama}: ${formatRupiah(d.nominal)} - ${d.ket}</span> <button onclick="deleteItem('penghasilan',${d.id})">Hapus</button></div>`;container.appendChild(div);});}
-  else if(section==='tabungan'){container=document.getElementById('history-tabungan');container.innerHTML='';dataTabungan.forEach(d=>{const div=document.createElement('div');div.className='history-item';div.innerHTML=`<div class="history-item-main"><span>${d.jenis} ${d.nama}: ${formatRupiah(d.nominal)} - ${d.ket}</span> <button onclick="deleteItem('tabungan',${d.id})">Hapus</button></div>`;container.appendChild(div);});}
-  else if(section==='pengeluaran'){container=document.getElementById('history-pengeluaran');container.innerHTML='';dataPengeluaran.forEach(d=>{const div=document.createElement('div');div.className='history-item';div.innerHTML=`<div class="history-item-main"><span>${d.sumber}: ${formatRupiah(d.nominal)} - ${d.ket}</span> <button onclick="deleteItem('pengeluaran',${d.id})">Hapus</button></div>`;container.appendChild(div);});}
-  else if(section==='hutang'){container=document.getElementById('history-hutang');container.innerHTML='';dataHutang.forEach(d=>{const div=document.createElement('div');div.className='history-item';
-    const mainInfo=document.createElement('div');mainInfo.className='history-item-main';mainInfo.innerHTML=`<span>${d.nama}: ${formatRupiah(d.nominal)} - ${d.tgl} - ${d.ket}</span> <button onclick="deleteItem('hutang',${d.id})">Hapus</button>`;
-    const paymentList=document.createElement('div');paymentList.style.marginTop='5px';
-    d.pembayaran.forEach((p,index)=>{const payItem=document.createElement('div');payItem.className='payment-item';payItem.innerHTML=`${p.sumber}: ${formatRupiah(p.nominal)} <button onclick="cancelPayment(${d.id},${index})">Batalkan</button>`;paymentList.appendChild(payItem);});
-    const formDiv=document.createElement('div');formDiv.className='payment-form';formDiv.innerHTML=`<select id="hutang-sumber-${d.id}"><option value="Cristian">Cristian</option><option value="Maharani">Maharani</option><option value="Bersama">Bersama</option></select><input type="number" id="hutang-nominal-${d.id}" placeholder="Nominal"><button onclick="addPayment(${d.id})">Tambah Pembayaran</button>`;
-    div.appendChild(mainInfo);div.appendChild(paymentList);div.appendChild(formDiv);container.appendChild(div);
-  });}
+  if(section==='penghasilan'){
+    container=document.getElementById('history-penghasilan');container.innerHTML='';
+    dataPenghasilan.forEach(d=>{const div=document.createElement('div');div.className='history-item';
+      div.innerHTML=`<div class="history-item-main"><span>${d.nama}: ${formatRupiah(d.nominal)} - ${d.ket}</span> <button onclick="deleteItem('penghasilan',${d.id})">Hapus</button></div>`;container.appendChild(div);
+    });
+  } else if(section==='tabungan'){
+    container=document.getElementById('history-tabungan');container.innerHTML='';
+    dataTabungan.forEach(d=>{const div=document.createElement('div');div.className='history-item';
+      div.innerHTML=`<div class="history-item-main"><span>${d.jenis} ${d.nama}: ${formatRupiah(d.nominal)} - ${d.ket}</span> <button onclick="deleteItem('tabungan',${d.id})">Hapus</button></div>`;container.appendChild(div);
+    });
+  } else if(section==='pengeluaran'){
+    container=document.getElementById('history-pengeluaran');container.innerHTML='';
+    dataPengeluaran.forEach(d=>{const div=document.createElement('div');div.className='history-item';
+      div.innerHTML=`<div class="history-item-main"><span>${d.sumber}: ${formatRupiah(d.nominal)} - ${d.ket}</span> <button onclick="deleteItem('pengeluaran',${d.id})">Hapus</button></div>`;container.appendChild(div);
+    });
+  } else if(section==='hutang'){
+    container=document.getElementById('history-hutang');container.innerHTML='';
+    dataHutang.forEach(d=>{
+      const div=document.createElement('div');div.className='history-item';
+      const mainInfo=document.createElement('div');mainInfo.className='history-item-main';
+      mainInfo.innerHTML=`<span>${d.nama}: ${formatRupiah(d.nominal)} - ${d.tgl} - ${d.ket}</span> <button onclick="deleteItem('hutang',${d.id})">Hapus</button>`;
+      const paymentList=document.createElement('div');paymentList.style.marginTop='5px';
+      d.pembayaran.forEach((p,index)=>{
+        const payItem=document.createElement('div');payItem.className='payment-item';
+        payItem.innerHTML=`${p.sumber}: ${formatRupiah(p.nominal)} <button onclick="cancelPayment(${d.id},${index})">Batalkan</button>`;
+        paymentList.appendChild(payItem);
+      });
+      const formDiv=document.createElement('div');formDiv.className='payment-form';
+      formDiv.innerHTML=`<select id="hutang-sumber-${d.id}"><option value="Cristian">Cristian</option><option value="Maharani">Maharani</option><option value="Bersama">Bersama</option></select>
+        <input type="text" id="hutang-nominal-${d.id}" placeholder="1.000.000" oninput="formatInputRibuan(this)">
+        <button onclick="addPayment(${d.id})">Tambah Pembayaran</button>`;
+      div.appendChild(mainInfo);div.appendChild(paymentList);div.appendChild(formDiv);container.appendChild(div);
+    });
+  }
 }
 
 // Delete Item
-function deleteItem(section,id){if(section==='penghasilan'){dataPenghasilan=dataPenghasilan.filter(d=>d.id!==id);renderHistory('penghasilan');}else if(section==='tabungan'){dataTabungan=dataTabungan.filter(d=>d.id!==id);renderHistory('tabungan');}else if(section==='pengeluaran'){dataPengeluaran=dataPengeluaran.filter(d=>d.id!==id);renderHistory('pengeluaran');}else if(section==='hutang'){dataHutang=dataHutang.filter(d=>d.id!==id);renderHistory('hutang');}updateSummary();}
+function deleteItem(section,id){
+  if(section==='penghasilan'){dataPenghasilan=dataPenghasilan.filter(d=>d.id!==id);renderHistory('penghasilan');}
+  else if(section==='tabungan'){dataTabungan=dataTabungan.filter(d=>d.id!==id);renderHistory('tabungan');}
+  else if(section==='pengeluaran'){dataPengeluaran=dataPengeluaran.filter(d=>d.id!==id);renderHistory('pengeluaran');}
+  else if(section==='hutang'){dataHutang=dataHutang.filter(d=>d.id!==id);renderHistory('hutang');}
+  updateSummary();
+}
 
 // Payment Hutang
-function addPayment(hutangId){const hutang=dataHutang.find(d=>d.id===hutangId);if(!hutang)return;const sumber=document.getElementById(`hutang-sumber-${hutangId}`).value;const nominal=Number(document.getElementById(`hutang-nominal-${hutangId}`).value);if(!nominal||nominal<=0)return;hutang.pembayaran.push({sumber,nominal});renderHistory('hutang');updateSummary();}
+function addPayment(hutangId){
+  const hutang=dataHutang.find(d=>d.id===hutangId);if(!hutang)return;
+  const sumber=document.getElementById(`hutang-sumber-${hutangId}`).value;
+  const nominal=getNumber(`hutang-nominal-${hutangId}`);
+  if(!nominal||nominal<=0)return;
+  hutang.pembayaran.push({sumber,nominal});
+  renderHistory('hutang');updateSummary();
+}
 function cancelPayment(hutangId,index){const hutang=dataHutang.find(d=>d.id===hutangId);if(!hutang)return;hutang.pembayaran.splice(index,1);renderHistory('hutang');updateSummary();}
 
 // Update Summary
@@ -200,17 +282,16 @@ function updateSummary(){
   let sumCristian=0,sumMaharani=0,sumTabTetap=0,sumTabBersama=0,sumPengBersama=0;
   let totalCristian=0,totalMaharani=0;
   dataPenghasilan.forEach(d=>{if(d.nama==='Cristian')totalCristian+=d.nominal;else totalMaharani+=d.nominal;});
-  let tabTetap=0,tabBersama=0;dataTabungan.forEach(d=>{if(d.jenis==='Tetap')tabTetap+=d.nominal;else tabBersama+=d.nominal;});
-  let pengBersama=0;dataPengeluaran.forEach(d=>{if(d.sumber==='Cristian')totalCristian-=d.nominal;else if(d.sumber==='Maharani')totalMaharani-=d.nominal;else if(d.sumber==='Bersama'){pengBersama+=d.nominal;tabBersama-=d.nominal;}});
-  dataTabungan.forEach(d=>{if(d.jenis==='Tetap'){if(d.nama==='Cristian')totalCristian-=d.nominal;else totalMaharani-=d.nominal;}else{totalCristian-=d.nominal/2;totalMaharani-=d.nominal/2;}});
-  dataHutang.forEach(h=>{h.pembayaran.forEach(p=>{if(p.sumber==='Cristian')totalCristian-=p.nominal;else if(p.sumber==='Maharani')totalMaharani-=p.nominal;else if(p.sumber==='Bersama'){totalCristian-=p.nominal/2;totalMaharani-=p.nominal/2;}})});
-  sumCristian=totalCristian;sumMaharani=totalMaharani;sumTabTetap=tabTetap;sumTabBersama=tabBersama;sumPengBersama=pengBersama;
-  document.getElementById('sum-cristian').innerText=formatRupiah(sumCristian);
-  document.getElementById('sum-maharani').innerText=formatRupiah(sumMaharani);
+  dataTabungan.forEach(d=>{if(d.jenis==='Tetap'){sumTabTetap+=d.nominal;if(d.nama==='Cristian')totalCristian-=d.nominal;else totalMaharani-=d.nominal;}else{sumTabBersama+=d.nominal;totalCristian-=d.nominal/2;totalMaharani-=d.nominal/2;}});
+  dataPengeluaran.forEach(d=>{if(d.sumber==='Cristian')totalCristian-=d.nominal;else if(d.sumber==='Maharani')totalMaharani-=d.nominal;else if(d.sumber==='Bersama'){sumPengBersama+=d.nominal;totalCristian-=d.nominal/2;totalMaharani-=d.nominal/2;}});
+  dataHutang.forEach(d=>{d.pembayaran.forEach(p=>{if(p.sumber==='Cristian')totalCristian-=p.nominal;else if(p.sumber==='Maharani')totalMaharani-=p.nominal;else if(p.sumber==='Bersama'){totalCristian-=p.nominal/2;totalMaharani-=p.nominal/2;}});});
+  document.getElementById('sum-cristian').innerText=formatRupiah(totalCristian);
+  document.getElementById('sum-maharani').innerText=formatRupiah(totalMaharani);
   document.getElementById('sum-tabungan-tetap').innerText=formatRupiah(sumTabTetap);
   document.getElementById('sum-tabungan-bersama').innerText=formatRupiah(sumTabBersama);
   document.getElementById('sum-pengeluaran-bersama').innerText=formatRupiah(sumPengBersama);
 }
+
 </script>
 
 </body>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Web Finansial — Modern Full</title>
+<title>Web Finansial — Full Modern</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -24,7 +24,7 @@ nav{display:flex;justify-content:space-around;background:#fff;box-shadow:0 1px 2
 nav button{flex:1;padding:1rem;border:none;background:none;color:var(--text-color);cursor:pointer;font-weight:600;transition:.3s;}
 nav button:hover, nav button.active{background:var(--accent);color:#fff;}
 .container{padding:1rem;display:flex;flex-direction:column;gap:1rem;}
-.summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem;}
+.summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem;margin-bottom:1rem;}
 .card{background:var(--card-bg);padding:1rem;border-radius:12px;text-align:center;box-shadow:0 4px 10px rgba(0,0,0,0.05);transition:.3s;}
 .card:hover{box-shadow:0 6px 12px rgba(0,0,0,0.1);}
 .card h3{margin-bottom:0.3rem;font-size:1rem;}
@@ -62,6 +62,7 @@ nav button:hover, nav button.active{background:var(--accent);color:#fff;}
 </nav>
 
 <div class="container">
+
 <div class="summary" id="summary">
 <div class="card"><h3>Pemasukan Cristian</h3><p id="sum-cristian">Rp0</p></div>
 <div class="card"><h3>Pemasukan Maharani</h3><p id="sum-maharani">Rp0</p></div>
@@ -70,7 +71,7 @@ nav button:hover, nav button.active{background:var(--accent);color:#fff;}
 <div class="card"><h3>Pengeluaran Bersama</h3><p id="sum-pengeluaran-bersama">Rp0</p></div>
 </div>
 
-<!-- Penghasilan -->
+<!-- PENGHASILAN -->
 <div id="penghasilan" class="section-wrapper">
 <div class="form-section">
 <h3>Input Penghasilan</h3>
@@ -85,7 +86,7 @@ nav button:hover, nav button.active{background:var(--accent);color:#fff;}
 <div class="history" id="history-penghasilan"></div>
 </div>
 
-<!-- Tabungan -->
+<!-- TABUNGAN -->
 <div id="tabungan" class="section-wrapper" style="display:none">
 <div class="form-section">
 <h3>Input Tabungan</h3>
@@ -107,7 +108,7 @@ nav button:hover, nav button.active{background:var(--accent);color:#fff;}
 <div class="history" id="history-tabungan"></div>
 </div>
 
-<!-- Pengeluaran -->
+<!-- PENGELUARAN -->
 <div id="pengeluaran" class="section-wrapper" style="display:none">
 <div class="form-section">
 <h3>Input Pengeluaran</h3>
@@ -122,7 +123,7 @@ nav button:hover, nav button.active{background:var(--accent);color:#fff;}
 <div class="history" id="history-pengeluaran"></div>
 </div>
 
-<!-- Hutang -->
+<!-- HUTANG -->
 <div id="hutang" class="section-wrapper" style="display:none">
 <div class="form-section">
 <h3>Input Hutang Aktif</h3>
@@ -169,10 +170,155 @@ document.getElementById(id).addEventListener('input',()=>formatInputRibuan(docum
 });
 function getNumber(inputId){return Number(document.getElementById(inputId).value.replace(/\./g,''))||0;}
 
-// --- ADD, DELETE, PAYMENT, CANCEL, UPDATE SUMMARY FUNCTIONS ---
-// Copy semua JS final sebelumnya dari versi terakhir yang berjalan penuh
-// Misal: addPenghasilan(), addTabungan(), addPengeluaran(), addHutang(), deleteItem(), addPayment(), cancelPayment(), updateSummary()
+// --- ADD DATA FUNCTIONS ---
+function addPenghasilan(){
+let nama=document.getElementById('input-penghasilan-nama').value;
+let nominal=getNumber('input-penghasilan-nominal');
+let ket=document.getElementById('input-penghasilan-ket').value;
+if(!nominal) return alert('Nominal harus diisi');
+let item={nama,nominal,ket};
+dataPenghasilan.push(item);
+updateSummary();
+renderHistory('penghasilan',dataPenghasilan);
+document.getElementById('input-penghasilan-nominal').value='';
+document.getElementById('input-penghasilan-ket').value='';
+}
+function addTabungan(){
+let jenis=document.getElementById('input-tabungan-jenis').value;
+let nama=jenis==='Tetap'?document.getElementById('input-tabungan-nama').value:'Bersama';
+let nominal=getNumber('input-tabungan-nominal');
+let ket=document.getElementById('input-tabungan-ket').value;
+if(!nominal) return alert('Nominal harus diisi');
+let item={jenis,nama,nominal,ket};
+dataTabungan.push(item);
+updateSummary();
+renderHistory('tabungan',dataTabungan);
+document.getElementById('input-tabungan-nominal').value='';
+document.getElementById('input-tabungan-ket').value='';
+}
+function addPengeluaran(){
+let sumber=document.getElementById('input-pengeluaran-sumber').value;
+let nominal=getNumber('input-pengeluaran-nominal');
+let ket=document.getElementById('input-pengeluaran-ket').value;
+if(!nominal) return alert('Nominal harus diisi');
+let item={sumber,nominal,ket};
+dataPengeluaran.push(item);
+updateSummary();
+renderHistory('pengeluaran',dataPengeluaran);
+document.getElementById('input-pengeluaran-nominal').value='';
+document.getElementById('input-pengeluaran-ket').value='';
+}
+function addHutang(){
+let nama=document.getElementById('input-hutang-nama').value;
+let nominal=getNumber('input-hutang-nominal');
+let tgl=document.getElementById('input-hutang-tgl').value;
+let ket=document.getElementById('input-hutang-ket').value;
+if(!nominal||!tgl) return alert('Nominal dan tanggal harus diisi');
+let item={nama,nominal,tgl,ket,pembayaran:[]};
+dataHutang.push(item);
+updateSummary();
+renderHistory('hutang',dataHutang);
+document.getElementById('input-hutang-nominal').value='';
+document.getElementById('input-hutang-tgl').value='';
+document.getElementById('input-hutang-ket').value='';
+}
 
+// --- RENDER HISTORY ---
+function renderHistory(type,data){
+let container=document.getElementById('history-'+type);
+container.innerHTML='';
+data.forEach((item,i)=>{
+let div=document.createElement('div');
+div.className='history-item';
+let html='';
+if(type==='hutang'){
+html=`<div><b>${item.nama}</b> | ${formatRupiah(item.nominal)} | ${item.tgl} | ${item.ket}</div>
+<div><button onclick="deleteItem('${type}',${i})">Hapus</button>
+<div class="payment-form">
+<select id="pay-sumber-${i}"><option value="Cristian">Cristian</option><option value="Maharani">Maharani</option><option value="Bersama">Bersama</option></select>
+<input type="text" id="pay-nominal-${i}" placeholder="Nominal">
+<button onclick="addPayment(${i})">Bayar</button>
+</div>
+${item.pembayaran.map((p,j)=>`<div class="payment-item">${formatRupiah(p.nominal)} via ${p.sumber} <button onclick="cancelPayment(${i},${j})">Batal</button></div>`).join('')}
+</div>`;
+}else{
+html=`<div>${type==='penghasilan'?item.nama:(type==='tabungan'?item.nama:item.sumber)} | ${formatRupiah(item.nominal)} | ${item.ket||''}</div><button onclick="deleteItem('${type}',${i})">Hapus</button>`;
+}
+div.innerHTML=html;
+container.appendChild(div);
+});
+}
+
+// --- DELETE ITEM ---
+function deleteItem(type,index){
+if(type==='penghasilan') dataPenghasilan.splice(index,1);
+if(type==='tabungan') dataTabungan.splice(index,1);
+if(type==='pengeluaran') dataPengeluaran.splice(index,1);
+if(type==='hutang') dataHutang.splice(index,1);
+updateSummary();
+renderHistory(type,type==='penghasilan'?dataPenghasilan:type==='tabungan'?dataTabungan:type==='pengeluaran'?dataPengeluaran:dataHutang);
+}
+
+// --- ADD PAYMENT HUTANG ---
+function addPayment(index){
+let nominal=getNumber('pay-nominal-'+index);
+let sumber=document.getElementById('pay-sumber-'+index).value;
+if(!nominal) return alert('Nominal harus diisi');
+dataHutang[index].pembayaran.push({nominal,sumber});
+updateSummary();
+renderHistory('hutang',dataHutang);
+}
+
+// --- CANCEL PAYMENT ---
+function cancelPayment(hutangIndex,paymentIndex){
+dataHutang[hutangIndex].pembayaran.splice(paymentIndex,1);
+updateSummary();
+renderHistory('hutang',dataHutang);
+}
+
+// --- UPDATE SUMMARY ---
+function updateSummary(){
+let sumCristian=sumMaharani=sumTabTetap=sumTabBersama=sumPengBersama=0;
+
+// Penghasilan
+dataPenghasilan.forEach(d=>{if(d.nama==='Cristian') sumCristian+=d.nominal; else sumMaharani+=d.nominal;});
+
+// Tabungan
+dataTabungan.forEach(d=>{
+if(d.jenis==='Tetap'){
+sumTabTetap+=d.nominal;
+if(d.nama==='Cristian') sumCristian-=d.nominal;
+else sumMaharani-=d.nominal;
+}else{
+sumTabBersama+=d.nominal;
+sumCristian-=d.nominal/2;
+sumMaharani-=d.nominal/2;
+}
+});
+
+// Pengeluaran
+dataPengeluaran.forEach(d=>{
+if(d.sumber==='Cristian') sumCristian-=d.nominal;
+else if(d.sumber==='Maharani') sumMaharani-=d.nominal;
+else if(d.sumber==='Bersama'){sumTabBersama-=d.nominal; sumPengBersama+=d.nominal;}
+});
+
+// Hutang & pembayaran
+dataHutang.forEach(d=>{
+d.pembayaran.forEach(p=>{
+if(p.sumber==='Cristian') sumCristian-=p.nominal;
+else if(p.sumber==='Maharani') sumMaharani-=p.nominal;
+else if(p.sumber==='Bersama'){sumTabBersama-=p.nominal; sumPengBersama+=p.nominal;}
+});
+});
+
+document.getElementById('sum-cristian').innerText=formatRupiah(sumCristian);
+document.getElementById('sum-maharani').innerText=formatRupiah(sumMaharani);
+document.getElementById('sum-tabungan-tetap').innerText=formatRupiah(sumTabTetap);
+document.getElementById('sum-tabungan-bersama').innerText=formatRupiah(sumTabBersama);
+document.getElementById('sum-pengeluaran-bersama').innerText=formatRupiah(sumPengBersama);
+}
 </script>
+
 </body>
 </html>

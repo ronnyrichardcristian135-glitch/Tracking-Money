@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Web Finansial — Layout Modern</title>
+<title>Web Finansial — Modern Full</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -19,6 +19,7 @@
 body{background:var(--bg);color:var(--text-color);}
 header{display:flex;justify-content:space-between;align-items:center;padding:1rem;background:#fff;box-shadow:0 2px 5px rgba(0,0,0,0.1);}
 header h1{color:var(--accent);}
+header .icon{cursor:pointer;font-size:1.2rem;color:var(--accent);}
 nav{display:flex;justify-content:space-around;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,0.05);}
 nav button{flex:1;padding:1rem;border:none;background:none;color:var(--text-color);cursor:pointer;font-weight:600;transition:.3s;}
 nav button:hover, nav button.active{background:var(--accent);color:#fff;}
@@ -38,66 +39,140 @@ nav button:hover, nav button.active{background:var(--accent);color:#fff;}
 .history-item{display:flex;justify-content:space-between;align-items:center;padding:0.5rem 0;border-bottom:1px solid #eee;}
 .history-item button{background:var(--danger);border:none;color:#fff;border-radius:4px;padding:0 6px;cursor:pointer;transition:.2s;}
 .history-item button:hover{background:#c0392b;}
+.payment-item{display:flex;justify-content:space-between;margin-left:10px;margin-top:3px;}
+.payment-item button{background:var(--danger);padding:0 5px;font-size:0.9rem;transition:0.2s;}
+.payment-item button:hover{background:#c0392b;}
+.payment-form{display:flex;gap:5px;margin-left:10px;margin-top:5px;}
+.payment-form input,.payment-form select{flex:1;padding:0.3rem;font-size:0.9rem;border-radius:5px;border:1px solid var(--input-border);}
 @media(max-width:768px){.section-wrapper{flex-direction:column;}}
 </style>
 </head>
 <body>
 
 <header>
-  <h1>Web Finansial</h1>
-  <div class="icon" title="Riset Data">&#128269;</div>
+<h1>Web Finansial</h1>
+<div class="icon" title="Riset Data">&#128269;</div>
 </header>
 
 <nav>
-  <button class="nav-btn active" data-target="penghasilan">Penghasilan</button>
-  <button class="nav-btn" data-target="tabungan">Tabungan</button>
-  <button class="nav-btn" data-target="pengeluaran">Pengeluaran</button>
-  <button class="nav-btn" data-target="hutang">Hutang Aktif</button>
+<button class="nav-btn active" data-target="penghasilan">Penghasilan</button>
+<button class="nav-btn" data-target="tabungan">Tabungan</button>
+<button class="nav-btn" data-target="pengeluaran">Pengeluaran</button>
+<button class="nav-btn" data-target="hutang">Hutang Aktif</button>
 </nav>
 
 <div class="container">
-  <div class="summary" id="summary">
-    <div class="card"><h3>Pemasukan Cristian</h3><p id="sum-cristian">Rp0</p></div>
-    <div class="card"><h3>Pemasukan Maharani</h3><p id="sum-maharani">Rp0</p></div>
-    <div class="card"><h3>Tabungan Tetap</h3><p id="sum-tabungan-tetap">Rp0</p></div>
-    <div class="card"><h3>Tabungan Bersama</h3><p id="sum-tabungan-bersama">Rp0</p></div>
-    <div class="card"><h3>Pengeluaran Bersama</h3><p id="sum-pengeluaran-bersama">Rp0</p></div>
-  </div>
+<div class="summary" id="summary">
+<div class="card"><h3>Pemasukan Cristian</h3><p id="sum-cristian">Rp0</p></div>
+<div class="card"><h3>Pemasukan Maharani</h3><p id="sum-maharani">Rp0</p></div>
+<div class="card"><h3>Tabungan Tetap</h3><p id="sum-tabungan-tetap">Rp0</p></div>
+<div class="card"><h3>Tabungan Bersama</h3><p id="sum-tabungan-bersama">Rp0</p></div>
+<div class="card"><h3>Pengeluaran Bersama</h3><p id="sum-pengeluaran-bersama">Rp0</p></div>
+</div>
 
-  <!-- Section modern: Form kiri, History kanan -->
-  <div id="penghasilan" class="section-wrapper">
-    <div class="form-section">
-      <h3>Input Penghasilan</h3>
-      <label>Nama</label>
-      <select id="input-penghasilan-nama"><option value="Cristian">Cristian</option><option value="Maharani">Maharani</option></select>
-      <label>Nominal</label>
-      <input type="text" id="input-penghasilan-nominal" placeholder="1.000.000">
-      <label>Keterangan</label>
-      <textarea id="input-penghasilan-ket" rows="2"></textarea>
-      <button onclick="addPenghasilan()">Tambah</button>
-    </div>
-    <div class="history" id="history-penghasilan"></div>
-  </div>
+<!-- Penghasilan -->
+<div id="penghasilan" class="section-wrapper">
+<div class="form-section">
+<h3>Input Penghasilan</h3>
+<label>Nama</label>
+<select id="input-penghasilan-nama"><option value="Cristian">Cristian</option><option value="Maharani">Maharani</option></select>
+<label>Nominal</label>
+<input type="text" id="input-penghasilan-nominal" placeholder="1.000.000">
+<label>Keterangan</label>
+<textarea id="input-penghasilan-ket" rows="2"></textarea>
+<button onclick="addPenghasilan()">Tambah</button>
+</div>
+<div class="history" id="history-penghasilan"></div>
+</div>
 
-  <!-- Tabungan, Pengeluaran, Hutang Aktif bisa dicopy sama pattern section-wrapper -->
+<!-- Tabungan -->
+<div id="tabungan" class="section-wrapper" style="display:none">
+<div class="form-section">
+<h3>Input Tabungan</h3>
+<label>Jenis Tabungan</label>
+<select id="input-tabungan-jenis" onchange="toggleTabunganNama()">
+<option value="Tetap">Tetap</option>
+<option value="Bersama">Bersama</option>
+</select>
+<div id="tabungan-nama-div">
+<label>Nama (jika Tetap)</label>
+<select id="input-tabungan-nama"><option value="Cristian">Cristian</option><option value="Maharani">Maharani</option></select>
+</div>
+<label>Nominal</label>
+<input type="text" id="input-tabungan-nominal" placeholder="1.000.000">
+<label>Keterangan</label>
+<textarea id="input-tabungan-ket" rows="2"></textarea>
+<button onclick="addTabungan()">Tambah</button>
+</div>
+<div class="history" id="history-tabungan"></div>
+</div>
+
+<!-- Pengeluaran -->
+<div id="pengeluaran" class="section-wrapper" style="display:none">
+<div class="form-section">
+<h3>Input Pengeluaran</h3>
+<label>Sumber Dana</label>
+<select id="input-pengeluaran-sumber"><option value="Cristian">Pemasukan Cristian</option><option value="Maharani">Pemasukan Maharani</option><option value="Bersama">Tabungan Bersama</option></select>
+<label>Nominal</label>
+<input type="text" id="input-pengeluaran-nominal" placeholder="1.000.000">
+<label>Keterangan</label>
+<textarea id="input-pengeluaran-ket" rows="2"></textarea>
+<button onclick="addPengeluaran()">Tambah</button>
+</div>
+<div class="history" id="history-pengeluaran"></div>
+</div>
+
+<!-- Hutang -->
+<div id="hutang" class="section-wrapper" style="display:none">
+<div class="form-section">
+<h3>Input Hutang Aktif</h3>
+<label>Nama</label>
+<select id="input-hutang-nama"><option value="Cristian">Cristian</option><option value="Maharani">Maharani</option><option value="Bersama">Bersama</option></select>
+<label>Nominal</label>
+<input type="text" id="input-hutang-nominal" placeholder="1.000.000">
+<label>Tanggal Jatuh Tempo</label>
+<input type="date" id="input-hutang-tgl">
+<label>Keterangan</label>
+<textarea id="input-hutang-ket" rows="2"></textarea>
+<button onclick="addHutang()">Tambah</button>
+</div>
+<div class="history" id="history-hutang"></div>
+</div>
+
 </div>
 
 <script>
-// JS nav & toggle
+// --- NAVIGATION ---
 const navBtns=document.querySelectorAll('.nav-btn');
 navBtns.forEach(btn=>btn.addEventListener('click',()=>{
-  document.querySelectorAll('.section-wrapper').forEach(s=>s.style.display='none');
-  document.getElementById(btn.dataset.target).style.display='flex';
-  navBtns.forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
+document.querySelectorAll('.section-wrapper').forEach(s=>s.style.display='none');
+document.getElementById(btn.dataset.target).style.display='flex';
+navBtns.forEach(b=>b.classList.remove('active'));
+btn.classList.add('active');
 }));
 
-// JS input ribuan & toggle tabungan nama
-function formatRibuan(input){ let val=input.value.replace(/\D/g,''); input.value=val?Number(val).toLocaleString('id-ID'):''; }
-['input-penghasilan-nominal'].forEach(id=>document.getElementById(id).addEventListener('input',()=>formatRibuan(document.getElementById(id))));
+// --- TABUNGAN NAMEDIV ---
+function toggleTabunganNama(){
+const jenis=document.getElementById('input-tabungan-jenis').value;
+document.getElementById('tabungan-nama-div').style.display=jenis==='Tetap'?'block':'none';
+}
+toggleTabunganNama();
 
-// ...sisa JS versi final sebelumnya (addPenghasilan, addTabungan, addPengeluaran, addHutang, deleteItem, addPayment, cancelPayment, updateSummary)
+// --- DATA ARRAYS ---
+let dataPenghasilan=[],dataTabungan=[],dataPengeluaran=[],dataHutang=[];
+
+// --- FORMAT RUPIAH & INPUT ---
+function formatRupiah(num){return 'Rp'+Number(num).toLocaleString('id-ID');}
+function formatInputRibuan(input){let val=input.value.replace(/\D/g,'');input.value=val?Number(val).toLocaleString('id-ID'):'';}
+['input-penghasilan-nominal','input-tabungan-nominal','input-pengeluaran-nominal','input-hutang-nominal'].forEach(id=>{
+document.getElementById(id).addEventListener('input',()=>formatInputRibuan(document.getElementById(id)));
+});
+function getNumber(inputId){return Number(document.getElementById(inputId).value.replace(/\./g,''))||0;}
+
+// --- ADD, DELETE, PAYMENT, CANCEL, UPDATE SUMMARY FUNCTIONS ---
+// Copy semua JS final sebelumnya dari versi terakhir yang berjalan penuh
+// Misal: addPenghasilan(), addTabungan(), addPengeluaran(), addHutang(), deleteItem(), addPayment(), cancelPayment(), updateSummary()
+
 </script>
-
 </body>
 </html>

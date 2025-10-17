@@ -1,543 +1,216 @@
 <!doctype html>
 <html lang="id">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Tracking Money — Cristian & Maharani</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root{
-      --bg:#0b0f14;
-      --card:#0f1620;
-      --muted:#b6c2cf;
-      --accent:#6ee7b7;
-      --danger:#ff6b6b;
-      --glass: rgba(255,255,255,0.04);
-      font-family: 'Poppins', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      background:linear-gradient(180deg,#071019 0%, #0b0f14 100%);
-      color:#e6eef6;
-      min-height:100vh;
-      display:flex;
-      gap:18px;
-      padding:18px;
-    }
-    /* layout */
-    .sidebar{
-      width:260px;
-      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border-radius:14px;
-      padding:18px;
-      box-shadow: 0 6px 18px rgba(2,6,23,0.6);
-      display:flex;
-      flex-direction:column;
-      gap:12px;
-    }
-    .brand{font-weight:700; font-size:18px; letter-spacing:0.2px; display:flex; align-items:center; gap:10px}
-    .brand .logo{
-      width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#4cc0ff);display:flex;align-items:center;justify-content:center;color:#012; font-weight:700;
-    }
-    nav{display:flex;flex-direction:column;gap:8px;margin-top:6px}
-    .nav-item{padding:10px;border-radius:8px;color:var(--muted);cursor:pointer;font-weight:600}
-    .nav-item.active{background:var(--glass); color:var(--accent)}
-    .small{font-size:12px;color:var(--muted)}
-    .main{
-      flex:1;
-      display:flex;
-      flex-direction:column;
-      gap:14px;
-      min-width:0;
-    }
-    .topbar{display:flex;justify-content:space-between;align-items:center;gap:12px}
-    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
-    .card{
-      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      padding:14px;border-radius:12px;box-shadow: 0 6px 18px rgba(2,6,23,0.4)
-    }
-    .card h3{margin:0;font-size:13px;color:var(--muted);font-weight:600}
-    .amount{font-size:20px;font-weight:700;margin-top:8px}
-    .grid{display:grid;grid-template-columns:1fr 420px;gap:12px;align-items:start}
-    .panel{background:var(--card);padding:14px;border-radius:12px;min-height:120px}
-    form{display:flex;flex-direction:column;gap:8px}
-    input, select{padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit;outline:none}
-    .row{display:flex;gap:8px}
-    button{padding:10px 12px;border-radius:10px;border:0;background:var(--accent);color:#042;cursor:pointer;font-weight:700}
-    .btn-ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)}
-    .history-list{max-height:320px;overflow:auto;display:flex;flex-direction:column;gap:8px;padding-right:6px}
-    .hitem{display:flex;justify-content:space-between;align-items:center;padding:8px;border-radius:8px;background:rgba(255,255,255,0.02)}
-    .hitem .title{font-weight:600}
-    .muted{color:var(--muted);font-size:13px}
-    footer{font-size:12px;color:var(--muted);text-align:center;margin-top:6px}
-    .controls{display:flex;gap:8px;align-items:center}
-    .tiny{font-size:12px;padding:6px 8px;border-radius:8px}
-    .danger{background:var(--danger);color:#2b0202}
-    .export-area{display:flex;gap:8px;align-items:center}
-    @media(max-width:980px){
-      body{flex-direction:column;padding:12px}
-      .sidebar{width:100%;flex-direction:row;align-items:center;justify-content:space-between;padding:10px}
-      .grid{grid-template-columns:1fr; }
-      .main{order:2}
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tracking Money — Cristian & Maharani</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0b0f14; --card:#0f1620; --muted:#b6c2cf; --accent:#6ee7b7; --danger:#ff6b6b; --glass: rgba(255,255,255,0.04);
+  font-family:'Poppins',sans-serif;
+}
+*{box-sizing:border-box;}
+body{margin:0; background:var(--bg); color:#e6eef6; min-height:100vh; display:flex; gap:12px; padding:12px;}
+.sidebar{width:240px; background:var(--card); border-radius:12px; padding:12px; display:flex; flex-direction:column; gap:12px;}
+.sidebar .brand{font-weight:700; font-size:18px; display:flex; align-items:center; gap:10px;}
+.sidebar .brand .logo{width:36px; height:36px; border-radius:8px; background:var(--accent); display:flex; justify-content:center; align-items:center; color:#042;}
+.sidebar nav{display:flex; flex-direction:column; gap:8px;}
+.nav-item{padding:8px 10px; border-radius:8px; color:var(--muted); cursor:pointer; font-weight:600;}
+.nav-item.active{background:var(--glass); color:var(--accent);}
+.main{flex:1; display:flex; flex-direction:column; gap:12px; min-width:0;}
+.cards{display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:10px;}
+.card{background:var(--card); padding:12px; border-radius:10px;}
+.card h3{margin:0; font-size:13px; color:var(--muted); font-weight:600;}
+.amount{font-size:18px; font-weight:700; margin-top:6px;}
+.panel{background:var(--card); padding:12px; border-radius:10px;}
+form{display:flex; flex-direction:column; gap:8px;}
+input, select{padding:8px; border-radius:6px; border:1px solid rgba(255,255,255,0.04); background:transparent; color:inherit; outline:none;}
+button{padding:8px 12px; border-radius:8px; border:0; background:var(--accent); color:#042; cursor:pointer; font-weight:700;}
+button.btn-ghost{background:transparent; border:1px solid rgba(255,255,255,0.06); color:var(--muted);}
+.history-list{max-height:280px; overflow:auto; display:flex; flex-direction:column; gap:6px;}
+.hitem{display:flex; justify-content:space-between; align-items:center; padding:6px; border-radius:6px; background:rgba(255,255,255,0.02);}
+.muted{color:var(--muted); font-size:12px;}
+footer{text-align:center; color:var(--muted); font-size:12px; margin-top:6px;}
+@media(max-width:900px){body{flex-direction:column;} .sidebar{width:100%; flex-direction:row; justify-content:space-between; align-items:center;}}
+</style>
 </head>
 <body>
-  <aside class="sidebar" aria-label="Sidebar">
-    <div>
-      <div class="brand"><div class="logo">TM</div> Tracking Money</div>
-      <div class="small">Cristian & Maharani</div>
+<aside class="sidebar">
+  <div>
+    <div class="brand"><div class="logo">TM</div> Tracking Money</div>
+    <div class="muted" style="font-size:12px;">Cristian & Maharani</div>
+  </div>
+  <nav>
+    <div class="nav-item active" data-view="dashboard">Ringkasan</div>
+    <div class="nav-item" data-view="input">Input</div>
+    <div class="nav-item" data-view="history">History</div>
+  </nav>
+  <div style="margin-top:auto;">
+    <div class="muted" style="font-size:12px;">Total Saldo</div>
+    <div style="font-weight:700;font-size:16px;" id="totalSaldo">Rp 0</div>
+    <div style="display:flex; gap:6px; margin-top:6px;">
+      <button class="btn-ghost" id="clearAll" style="padding:6px;">Clear All</button>
     </div>
+  </div>
+</aside>
 
-    <nav id="nav">
-      <div class="nav-item active" data-view="dashboard">Ringkasan</div>
-      <div class="nav-item" data-view="input">Input</div>
-      <div class="nav-item" data-view="history">History</div>
-      <div class="nav-item" data-view="backup">Backup</div>
-    </nav>
+<main class="main">
+  <div class="cards">
+    <div class="card"><h3>Pemasukan</h3><div class="amount" id="sumIncome">Rp 0</div></div>
+    <div class="card"><h3>Tabungan</h3><div class="amount" id="sumSavings">Rp 0</div></div>
+    <div class="card"><h3>Pengeluaran</h3><div class="amount" id="sumExpenses">Rp 0</div></div>
+    <div class="card"><h3>Hutang</h3><div class="amount" id="sumDebts">Rp 0</div></div>
+  </div>
 
-    <div style="margin-top:auto;display:flex;flex-direction:column;gap:8px">
-      <div class="small">Total Saldo</div>
-      <div style="font-weight:700;font-size:18px" id="totalSaldo">Rp 0</div>
-      <div style="display:flex;gap:8px;margin-top:6px">
-        <button class="tiny btn-ghost" id="clearAll">Clear All</button>
-        <button class="tiny" id="resetDemo">Reset</button>
+  <section id="view-dashboard" style="margin-top:12px;">
+    <div class="panel"><h3>Saldo Detail</h3>
+      <div class="muted" style="margin-top:6px;">Cristian / Maharani / Bersama</div>
+      <div style="display:flex; gap:12px; margin-top:6px;">
+        <div>C: <span id="incomeCristian">Rp 0</span></div>
+        <div>M: <span id="incomeMaharani">Rp 0</span></div>
+        <div>B: <span id="incomeBersama">Rp 0</span></div>
       </div>
     </div>
-  </aside>
+  </section>
 
-  <main class="main">
-    <div class="topbar">
-      <div style="display:flex;flex-direction:column">
-        <div style="font-weight:700;font-size:18px">Tracking Money</div>
-        <div class="small">Pantau pemasukan, tabungan, pengeluaran & hutang</div>
-      </div>
-      <div class="controls">
-        <div class="muted">Tema: Gelap</div>
-      </div>
+  <section id="view-input" style="display:none; margin-top:12px;">
+    <div class="panel">
+      <h3>Input Transaksi</h3>
+      <form id="formInput">
+        <label>Jenis</label>
+        <select id="type">
+          <option value="income">Pemasukan</option>
+          <option value="saving">Tabungan</option>
+          <option value="expense">Pengeluaran</option>
+          <option value="debt">Hutang</option>
+          <option value="paydebt">Bayar Hutang</option>
+        </select>
+        <div id="dynamicFields"></div>
+        <button type="submit">Simpan</button>
+      </form>
     </div>
+  </section>
 
-    <section id="view-dashboard">
-      <div class="cards">
-        <div class="card">
-          <h3>Pemasukan (Gabungan)</h3>
-          <div class="amount" id="sumIncome">Rp 0</div>
-          <div class="small">Cristian / Maharani / Bersama</div>
-        </div>
-        <div class="card">
-          <h3>Tabungan</h3>
-          <div class="amount" id="sumSavings">Rp 0</div>
-          <div class="small">Jumlah yang disisihkan</div>
-        </div>
-        <div class="card">
-          <h3>Hutang Aktif</h3>
-          <div class="amount" id="sumDebts">Rp 0</div>
-          <div class="small">Total hutang belum terbayar</div>
-        </div>
-        <div class="card">
-          <h3>Pengeluaran</h3>
-          <div class="amount" id="sumExpenses">Rp 0</div>
-          <div class="small">Total pengeluaran</div>
-        </div>
-      </div>
+  <section id="view-history" style="display:none; margin-top:12px;">
+    <div class="panel">
+      <h3>Riwayat Transaksi</h3>
+      <div class="history-list" id="historyAll"></div>
+    </div>
+  </section>
 
-      <div class="grid" style="margin-top:12px">
-        <div class="panel">
-          <h3 style="margin-top:0">Detail Saldo</h3>
-          <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
-            <div style="flex:1">
-              <div class="small">Pemasukan Cristian</div>
-              <div id="incomeCristian">Rp 0</div>
-            </div>
-            <div style="flex:1">
-              <div class="small">Pemasukan Maharani</div>
-              <div id="incomeMaharani">Rp 0</div>
-            </div>
-            <div style="flex:1">
-              <div class="small">Pemasukan Bersama</div>
-              <div id="incomeBersama">Rp 0</div>
-            </div>
-          </div>
-
-          <div style="margin-top:12px">
-            <div class="small">Catatan</div>
-            <div class="muted">Tabungan hanya memotong pemasukan (sesuai permintaan). Saat pembayaran hutang pilih sumber bayar.</div>
-          </div>
-        </div>
-
-        <div class="panel" id="panel-input">
-          <h3 style="margin-top:0">Form Cepat</h3>
-
-          <form id="formInput">
-            <label class="small">Jenis</label>
-            <select id="type">
-              <option value="income">Pemasukan</option>
-              <option value="saving">Tabungan</option>
-              <option value="expense">Pengeluaran</option>
-              <option value="debt">Hutang (Buat)</option>
-              <option value="paydebt">Bayar Hutang</option>
-            </select>
-
-            <div id="dynamicFields">
-              <!-- dynamic fields injected here -->
-            </div>
-
-            <div style="display:flex;gap:8px;margin-top:6px">
-              <button type="submit">Simpan</button>
-              <button type="button" class="btn-ghost" id="addSample">Contoh</button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </section>
-
-    <section id="view-input" style="display:none">
-      <div class="grid">
-        <div class="panel">
-          <h3 style="margin-top:0">Form Lengkap</h3>
-          <form id="formFull">
-            <label class="small">Kategori</label>
-            <select id="catFull">
-              <option value="income">Pemasukan</option>
-              <option value="saving">Tabungan</option>
-              <option value="expense">Pengeluaran</option>
-              <option value="debt">Hutang</option>
-              <option value="paydebt">Bayar Hutang</option>
-            </select>
-
-            <div class="row">
-              <div style="flex:1">
-                <label class="small">Jumlah (Rp)</label>
-                <input id="amountFull" placeholder="contoh 1500000" inputmode="numeric">
-              </div>
-              <div style="width:150px">
-                <label class="small">Sumber</label>
-                <select id="sourceFull">
-                  <option value="cristian">Cristian</option>
-                  <option value="maharani">Maharani</option>
-                  <option value="bersama">Bersama</option>
-                </select>
-              </div>
-            </div>
-
-            <label class="small">Deskripsi</label>
-            <input id="noteFull" placeholder="Contoh: gaji, belanja bulanan, transfer...">
-
-            <div style="display:flex;gap:8px;margin-top:8px">
-              <button type="submit">Simpan Lengkap</button>
-              <button type="button" class="btn-ghost" id="clearForm">Reset Form</button>
-            </div>
-          </form>
-        </div>
-
-        <div class="panel">
-          <h3 style="margin-top:0">Hutang Aktif</h3>
-          <div id="debtsList" class="history-list"></div>
-        </div>
-      </div>
-    </section>
-
-    <section id="view-history" style="display:none">
-      <div class="panel">
-        <h3 style="margin-top:0">Riwayat Semua Transaksi</h3>
-        <div class="history-list" id="historyAll"></div>
-      </div>
-    </section>
-
-    <section id="view-backup" style="display:none">
-      <div class="panel">
-        <h3 style="margin-top:0">Backup & Restore</h3>
-        <div class="export-area" style="margin-top:8px">
-          <button id="exportJson">Export JSON</button>
-          <input type="file" id="fileInput" class="tiny" />
-        </div>
-        <div style="margin-top:12px" class="muted">Gunakan export untuk backup. Import akan menggantikan data tersimpan.</div>
-      </div>
-    </section>
-
-    <footer>© 2025 Tracking Money — dibuat dengan ❤️</footer>
-  </main>
+  <footer>© 2025 Tracking Money</footer>
+</main>
 
 <script>
-/* Storage structure:
- localStorage.trackingMoney = JSON.stringify({
-   incomes: [{id,amount,source,note,date}],
-   savings: [...],
-   expenses: [...],
-   debts: [{id,amount,source,note,date,remaining}],
-   payments: [{id, debtId, amount, source, date, note}]
- })
-*/
-const KEY = 'trackingMoney_v1';
+const KEY='trackingMoney_simple';
+let data = JSON.parse(localStorage.getItem(KEY)||'{"incomes":[],"savings":[],"expenses":[],"debts":[],"payments":[]}');
 
-function loadData(){
-  try{
-    const raw = localStorage.getItem(KEY);
-    if(!raw) return defaultData();
-    return JSON.parse(raw);
-  }catch(e){
-    console.error(e);
-    return defaultData();
-  }
-}
-function defaultData(){
-  return { incomes:[], savings:[], expenses:[], debts:[], payments:[] };
-}
-function saveData(d){ localStorage.setItem(KEY, JSON.stringify(d)); renderAll(); }
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8);}
+function fmt(n){return 'Rp '+Number(n||0).toLocaleString('id-ID');}
+function parseNum(v){return Number(String(v||0).replace(/[^\d\-]/g,''))||0;}
 
-let data = loadData();
-
-/* Util */
-function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
-function fmt(n){ n = Number(n)||0; return 'Rp ' + n.toLocaleString('id-ID'); }
-function parseNum(v){ if(typeof v==='number') return v; if(!v) return 0; return Number(String(v).replace(/[^\d\-]/g,''))||0; }
-
-/* Navigation */
-document.querySelectorAll('.nav-item').forEach(n=>{
-  n.addEventListener('click', ()=>{
-    document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));
-    n.classList.add('active');
-    const v = n.getAttribute('data-view');
-    document.querySelectorAll('[id^="view-"]').forEach(el=>el.style.display = el.id === 'view-'+v ? '' : 'none');
-  });
-});
-
-/* Dynamic form area (top quick form) */
-const dyn = document.getElementById('dynamicFields');
-const typeSelect = document.getElementById('type');
-
-function buildDynamic(type){
-  dyn.innerHTML = '';
-  if(type === 'income'){
-    dyn.innerHTML = `
-      <label class="small">Jumlah (Rp)</label>
-      <input id="q_amount" inputmode="numeric" placeholder="contoh 2000000">
-      <label class="small">Sumber</label>
-      <select id="q_source"><option value="cristian">Cristian</option><option value="maharani">Maharani</option><option value="bersama">Bersama</option></select>
-      <label class="small">Catatan</label><input id="q_note" placeholder="gaji / proyek">
-    `;
-  } else if(type === 'saving'){
-    dyn.innerHTML = `
-      <label class="small">Jumlah Tabungan (Rp)</label>
-      <input id="q_amount" inputmode="numeric" placeholder="contoh 500000">
-      <label class="small">Sumber (dipotong dari)</label>
-      <select id="q_source"><option value="cristian">Cristian</option><option value="maharani">Maharani</option><option value="bersama">Bersama</option></select>
-      <label class="small">Catatan</label><input id="q_note" placeholder="tujuan tabungan">
-    `;
-  } else if(type === 'expense'){
-    dyn.innerHTML = `
-      <label class="small">Jumlah Pengeluaran (Rp)</label>
-      <input id="q_amount" inputmode="numeric" placeholder="contoh 150000">
-      <label class="small">Sumber</label>
-      <select id="q_source"><option value="cristian">Cristian</option><option value="maharani">Maharani</option><option value="bersama">Bersama</option></select>
-      <label class="small">Catatan</label><input id="q_note" placeholder="keterangan">
-    `;
-  } else if(type === 'debt'){
-    dyn.innerHTML = `
-      <label class="small">Jumlah Hutang (Rp)</label>
-      <input id="q_amount" inputmode="numeric" placeholder="contoh 1000000">
-      <label class="small">Pemberi / Keterangan</label>
-      <input id="q_note" placeholder="kreditur atau keterangan">
-    `;
-  } else if(type === 'paydebt'){
-    // list active debts
-    let options = '<option value="">-- pilih hutang --</option>';
-    data.debts.forEach(d=> options += \`<option value="\${d.id}">\${d.note} — sisa: \${fmt(d.remaining)}</option>\`);
-    dyn.innerHTML = `
-      <label class="small">Pilih Hutang</label>
-      <select id="q_debtId">${options}</select>
-      <label class="small">Jumlah Bayar (Rp)</label>
-      <input id="q_amount" inputmode="numeric" placeholder="contoh 500000">
-      <label class="small">Sumber Bayar</label>
-      <select id="q_source"><option value="cristian">Cristian</option><option value="maharani">Maharani</option><option value="bersama">Bersama</option></select>
-      <label class="small">Catatan</label><input id="q_note" placeholder="keterangan pembayaran">
-    `;
-  }
-}
-typeSelect.addEventListener('change', ()=> buildDynamic(typeSelect.value));
-buildDynamic(typeSelect.value);
-
-/* Quick form submit */
-document.getElementById('formInput').addEventListener('submit', e=>{
-  e.preventDefault();
-  const t = typeSelect.value;
-  const amount = parseNum(document.getElementById('q_amount')?.value);
-  const source = document.getElementById('q_source')?.value || 'bersama';
-  const note = document.getElementById('q_note')?.value || '';
-  if(t==='income'){
-    data.incomes.push({id:uid(), amount, source, note, date:new Date().toISOString()});
-  } else if(t==='saving'){
-    // create saving and reduce source's effective balance by amount (we'll treat via record only)
-    data.savings.push({id:uid(), amount, source, note, date:new Date().toISOString()});
-    // no separate 'reduce' in incomes stored - sum remains but we will subtract savings from available when calculating
-  } else if(t==='expense'){
-    data.expenses.push({id:uid(), amount, source, note, date:new Date().toISOString()});
-  } else if(t==='debt'){
-    data.debts.push({id:uid(), amount, source:'kredit', note:note||'hutang', date:new Date().toISOString(), remaining: amount});
-  } else if(t==='paydebt'){
-    const debtId = document.getElementById('q_debtId')?.value;
-    if(!debtId){ alert('Pilih hutang yang akan dibayar'); return; }
-    const debt = data.debts.find(d=>d.id===debtId);
-    if(!debt){ alert('Hutang tidak ditemukan'); return; }
-    if(amount <= 0){ alert('Masukkan jumlah yang valid'); return; }
-    const payAmount = Math.min(amount, debt.remaining);
-    debt.remaining = Math.max(0, debt.remaining - payAmount);
-    data.payments.push({id:uid(), debtId, amount:payAmount, source, note, date:new Date().toISOString()});
-    // jika lunas, biarkan tetap tercatat sebagai remaining 0
-  }
-  saveData(data);
-  e.target.reset();
-  buildDynamic(typeSelect.value);
-});
-
-/* Full form submit */
-document.getElementById('formFull').addEventListener('submit', e=>{
-  e.preventDefault();
-  const cat = document.getElementById('catFull').value;
-  const amount = parseNum(document.getElementById('amountFull').value);
-  const source = document.getElementById('sourceFull').value;
-  const note = document.getElementById('noteFull').value || '';
-  if(cat==='income') data.incomes.push({id:uid(), amount, source, note, date:new Date().toISOString()});
-  else if(cat==='saving') data.savings.push({id:uid(), amount, source, note, date:new Date().toISOString()});
-  else if(cat==='expense') data.expenses.push({id:uid(), amount, source, note, date:new Date().toISOString()});
-  else if(cat==='debt') data.debts.push({id:uid(), amount, source, note, date:new Date().toISOString(), remaining:amount});
-  saveData(data);
-  e.target.reset();
-});
-
-/* UI actions */
-document.getElementById('addSample').addEventListener('click', ()=>{
-  document.getElementById('q_amount').value = '150000';
-  document.getElementById('q_note').value = 'contoh';
-});
-document.getElementById('clearAll').addEventListener('click', ()=>{
-  if(confirm('Hapus semua data? Tindakan ini tidak dapat dibatalkan.')) {
-    data = defaultData(); saveData(data);
-  }
-});
-document.getElementById('resetDemo').addEventListener('click', ()=>{
-  if(confirm('Isi demo akan dimuat (menimpa data saat ini). Lanjutkan?')){
-    data = demoData(); saveData(data);
-  }
-});
-document.getElementById('exportJson').addEventListener('click', ()=>{
-  const blob = new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = 'tracking-money-backup.json'; a.click();
-  URL.revokeObjectURL(url);
-});
-document.getElementById('fileInput').addEventListener('change', (ev)=>{
-  const f = ev.target.files[0]; if(!f) return;
-  const r = new FileReader();
-  r.onload = (e)=> {
-    try{
-      const parsed = JSON.parse(e.target.result);
-      if(confirm('Import data akan menggantikan data saat ini. Lanjutkan?')){ data = parsed; saveData(data); }
-    }catch(err){ alert('File tidak valid'); }
-  }
-  r.readAsText(f);
-});
-
-/* Demo data */
-function demoData(){
-  return {
-    incomes: [
-      {id:uid(), amount:2000000, source:'cristian', note:'Gaji', date:new Date().toISOString()},
-      {id:uid(), amount:2000000, source:'maharani', note:'Gaji', date:new Date().toISOString()}
-    ],
-    savings: [{id:uid(), amount:500000, source:'cristian', note:'tabungan rumah', date:new Date().toISOString()}],
-    expenses: [{id:uid(), amount:300000, source:'bersama', note:'belanja', date:new Date().toISOString()}],
-    debts: [{id:uid(), amount:1000000, source:'kreditur A', note:'hutang motor', date:new Date().toISOString(), remaining:1000000}],
-    payments: []
-  };
-}
-
-/* Render UI */
 function renderAll(){
-  // re-load data var
-  data = loadData();
-
-  const sumIncome = data.incomes.reduce((s,i)=>s + parseNum(i.amount),0);
-  const sumSavings = data.savings.reduce((s,i)=>s + parseNum(i.amount),0);
-  const sumExpenses = data.expenses.reduce((s,i)=>s + parseNum(i.amount),0);
-  const sumDebts = data.debts.reduce((s,i)=>s + parseNum(i.remaining),0);
-
+  const sumIncome = data.incomes.reduce((s,i)=>s+parseNum(i.amount),0);
+  const sumSavings = data.savings.reduce((s,i)=>s+parseNum(i.amount),0);
+  const sumExpenses = data.expenses.reduce((s,i)=>s+parseNum(i.amount),0);
+  const sumDebts = data.debts.reduce((s,i)=>s+parseNum(i.remaining||i.amount),0);
   document.getElementById('sumIncome').innerText = fmt(sumIncome);
   document.getElementById('sumSavings').innerText = fmt(sumSavings);
   document.getElementById('sumExpenses').innerText = fmt(sumExpenses);
   document.getElementById('sumDebts').innerText = fmt(sumDebts);
+
   document.getElementById('incomeCristian').innerText = fmt(data.incomes.filter(x=>x.source==='cristian').reduce((s,i)=>s+parseNum(i.amount),0));
   document.getElementById('incomeMaharani').innerText = fmt(data.incomes.filter(x=>x.source==='maharani').reduce((s,i)=>s+parseNum(i.amount),0));
   document.getElementById('incomeBersama').innerText = fmt(data.incomes.filter(x=>x.source==='bersama').reduce((s,i)=>s+parseNum(i.amount),0));
 
-  // total saldo = incomes - savings - expenses - paid amounts
-  const totalPayments = data.payments.reduce((s,p)=>s + parseNum(p.amount),0);
-  const totalSaldo = sumIncome - sumSavings - sumExpenses - totalPayments;
+  const totalSaldo = sumIncome - sumSavings - sumExpenses;
   document.getElementById('totalSaldo').innerText = fmt(totalSaldo);
 
-  // render debts list
-  const debtsEl = document.getElementById('debtsList'); debtsEl.innerHTML = '';
-  data.debts.forEach(d=>{
-    const div = document.createElement('div'); div.className='hitem';
-    div.innerHTML = \`<div><div class="title">\${d.note}</div><div class="muted">Sisa: \${fmt(d.remaining)} • Dibuat: \${new Date(d.date).toLocaleDateString()}</div></div>
-    <div style="text-align:right">
-      <div style="font-weight:700">\${fmt(d.remaining)}</div>
-      <div style="display:flex;gap:6px;margin-top:6px">
-        <button class="tiny btn-ghost" onclick="promptPay('\${d.id}')">Bayar</button>
-        <button class="tiny btn-ghost" onclick="removeDebt('\${d.id}')">Hapus</button>
-      </div>
-    </div>\`;
-    debtsEl.appendChild(div);
+  const historyAll = document.getElementById('historyAll'); if(historyAll) historyAll.innerHTML='';
+  ['incomes','savings','expenses','debts','payments'].forEach(cat=>{
+    data[cat].forEach(item=>{
+      if(!historyAll) return;
+      const div=document.createElement('div'); div.className='hitem';
+      div.innerHTML=`<div>${cat.toUpperCase()} • ${item.note||''}</div><div>${fmt(item.amount||item.remaining||0)}</div>`;
+      historyAll.appendChild(div);
+    });
   });
-
-  // history all
-  const historyAll = document.getElementById('historyAll'); historyAll.innerHTML = '';
-  const join = []
-    .concat(data.incomes.map(i=>({t:'Pemasukan',...i})))
-    .concat(data.savings.map(i=>({t:'Tabungan',...i})))
-    .concat(data.expenses.map(i=>({t:'Pengeluaran',...i})))
-    .concat(data.debts.map(i=>({t:'Hutang',...i})))
-    .concat(data.payments.map(i=>({t:'Pembayaran Hutang',...i})));
-  join.sort((a,b)=> new Date(b.date) - new Date(a.date));
-  join.forEach(item=>{
-    const d = document.createElement('div'); d.className='hitem';
-    d.innerHTML = \`<div><div class="title">\${item.t} • \${item.note||''}</div><div class="muted">\${new Date(item.date).toLocaleString()}</div></div><div style="text-align:right"><div class="title">\${fmt(item.amount||item.remaining||0)}</div></div>\`;
-    historyAll.appendChild(d);
-  });
-
-  // refresh dynamic form debt options if on paydebt
-  if(typeSelect.value === 'paydebt') buildDynamic('paydebt');
-  // persist data variable (in case)
   localStorage.setItem(KEY, JSON.stringify(data));
 }
 
-/* helper functions for actions from lists */
-window.promptPay = function(debtId){
-  const debt = data.debts.find(d=>d.id===debtId);
-  if(!debt) return alert('Hutang tidak ditemukan');
-  const val = prompt('Jumlah yang dibayar (sisa: '+ debt.remaining.toLocaleString() +')', '');
-  const amount = parseNum(val);
-  if(amount<=0) return;
-  const source = prompt('Sumber bayar (cristian/maharani/bersama)', 'cristian') || 'cristian';
-  const payAmount = Math.min(amount, debt.remaining);
-  debt.remaining = Math.max(0, debt.remaining - payAmount);
-  data.payments.push({id:uid(), debtId, amount:payAmount, source, note:'bayar manual', date:new Date().toISOString()});
-  saveData(data);
+function buildDynamic(){
+  const type=document.getElementById('type').value;
+  const dyn=document.getElementById('dynamicFields'); dyn.innerHTML='';
+  if(type==='income'||type==='saving'||type==='expense'){
+    dyn.innerHTML=`
+      <label>Jumlah (Rp)</label><input id="q_amount" inputmode="numeric">
+      <label>Sumber</label>
+      <select id="q_source">
+        <option value="cristian">Cristian</option>
+        <option value="maharani">Maharani</option>
+        <option value="bersama">Bersama</option>
+      </select>
+      <label>Catatan</label><input id="q_note">
+    `;
+  } else if(type==='debt'){
+    dyn.innerHTML=`<label>Jumlah Hutang (Rp)</label><input id="q_amount" inputmode="numeric"><label>Catatan</label><input id="q_note">`;
+  } else if(type==='paydebt'){
+    let options='<option value="">--pilih hutang--</option>';
+    data.debts.forEach(d=>options+=`<option value="${d.id}">${d.note} - sisa: ${fmt(d.remaining||d.amount)}</option>`);
+    dyn.innerHTML=`
+      <label>Hutang</label><select id="q_debtId">${options}</select>
+      <label>Jumlah Bayar (Rp)</label><input id="q_amount" inputmode="numeric">
+      <label>Sumber</label>
+      <select id="q_source">
+        <option value="cristian">Cristian</option>
+        <option value="maharani">Maharani</option>
+        <option value="bersama">Bersama</option>
+      </select>
+      <label>Catatan</label><input id="q_note">
+    `;
+  }
 }
-window.removeDebt = function(debtId){
-  if(!confirm('Hapus data hutang ini?')) return;
-  data.debts = data.debts.filter(d=>d.id!==debtId);
-  saveData(data);
-}
+document.getElementById('type').addEventListener('change', buildDynamic);
+buildDynamic();
 
-/* init render */
-if(!localStorage.getItem(KEY)){
-  data = demoData(); saveData(data);
-} else {
+document.getElementById('formInput').addEventListener('submit', e=>{
+  e.preventDefault();
+  const type=document.getElementById('type').value;
+  const amount=parseNum(document.getElementById('q_amount')?.value);
+  const source=document.getElementById('q_source')?.value||'bersama';
+  const note=document.getElementById('q_note')?.value||'';
+  if(type==='income') data.incomes.push({id:uid(), amount, source, note, date:new Date().toISOString()});
+  else if(type==='saving') data.savings.push({id:uid(), amount, source, note, date:new Date().toISOString()});
+  else if(type==='expense') data.expenses.push({id:uid(), amount, source, note, date:new Date().toISOString()});
+  else if(type==='debt') data.debts.push({id:uid(), amount, note, date:new Date().toISOString(), remaining:amount});
+  else if(type==='paydebt'){
+    const debtId=document.getElementById('q_debtId')?.value;
+    const debt=data.debts.find(d=>d.id===debtId);
+    if(!debt) return alert('Pilih hutang valid'); 
+    const payAmount=Math.min(amount, debt.remaining||debt.amount); 
+    debt.remaining=(debt.remaining||debt.amount)-payAmount; 
+    data.payments.push({id:uid(), debtId, amount:payAmount, source, note, date:new Date().toISOString()});
+  }
+  document.getElementById('formInput').reset();
+  buildDynamic();
   renderAll();
-}
+});
+
+document.getElementById('clearAll').addEventListener('click', ()=>{
+  if(confirm('Hapus semua data?')){ data={incomes:[],savings:[],expenses:[],debts:[],payments:[]}; renderAll(); }
+});
+
+document.querySelectorAll('.nav-item').forEach(n=>{
+  n.addEventListener('click', ()=>{
+    document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));
+    n.classList.add('active');
+    const v=n.getAttribute('data-view');
+    document.querySelectorAll('section[id^="view-"]').forEach(s=>s.style.display=s.id==='view-'+v?'':'none');
+  });
+});
+
+renderAll();
 </script>
 </body>
 </html>

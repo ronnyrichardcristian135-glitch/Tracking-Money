@@ -8,20 +8,21 @@
 
   <style>
     :root {
-      --bg: #f5f6fa;
-      --primary: #4a90e2;
-      --success: #2ecc71;
-      --danger: #e74c3c;
-      --dark: #2c3e50;
+      --bg: #0f172a;
+      --card: #1e293b;
+      --text: #f1f5f9;
+      --primary: #3b82f6;
+      --success: #10b981;
+      --danger: #ef4444;
       --radius: 16px;
     }
 
     body {
       font-family: 'Poppins', sans-serif;
       background: var(--bg);
+      color: var(--text);
       margin: 0;
       padding: 0;
-      color: var(--dark);
     }
 
     header {
@@ -29,7 +30,7 @@
       color: white;
       text-align: center;
       padding: 1rem;
-      font-size: 1.4rem;
+      font-size: 1.3rem;
       font-weight: 600;
     }
 
@@ -40,16 +41,10 @@
     }
 
     .card {
-      background: white;
+      background: var(--card);
       border-radius: var(--radius);
       padding: 1rem;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-
-    .flex {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
     }
 
     input, select, button {
@@ -57,7 +52,9 @@
       font-size: 1rem;
       padding: 0.5rem;
       border-radius: var(--radius);
-      border: 1px solid #ccc;
+      border: 1px solid #334155;
+      background: #0f172a;
+      color: var(--text);
     }
 
     button {
@@ -67,9 +64,9 @@
       cursor: pointer;
     }
 
-    button:hover {
-      opacity: 0.9;
-    }
+    button:hover { opacity: 0.9; }
+
+    .flex { display: flex; gap: 0.5rem; flex-wrap: wrap; }
 
     .green { color: var(--success); }
     .red { color: var(--danger); }
@@ -93,7 +90,7 @@
           <option value="tabungan">Tabungan</option>
         </select>
         <input type="number" id="jumlah" placeholder="Jumlah (Rp)" />
-        <button onclick="tambahData()">Tambah</button>
+        <button id="btnTambah">Tambah</button>
       </div>
     </div>
 
@@ -110,15 +107,17 @@
   </main>
 
   <script>
-    // ====== Inisialisasi Data ======
-    let data = JSON.parse(localStorage.getItem("data")) || [];
-    let tabunganTetap = JSON.parse(localStorage.getItem("tabunganTetap")) || {
-      Cristian: 0,
-      Maharani: 0
-    };
+    // Pastikan tidak ada deklarasi ganda
+    if (!window.dataKeuangan) {
+      window.dataKeuangan = {
+        data: JSON.parse(localStorage.getItem("data")) || [],
+        tabungan: JSON.parse(localStorage.getItem("tabungan")) || { Cristian: 0, Maharani: 0 }
+      };
+    }
 
-    // ====== Fungsi Tambah Data ======
-    function tambahData() {
+    const { data, tabungan } = window.dataKeuangan;
+
+    document.getElementById("btnTambah").addEventListener("click", () => {
       const nama = document.getElementById("nama").value;
       const jenis = document.getElementById("jenis").value;
       const jumlah = parseInt(document.getElementById("jumlah").value || 0);
@@ -128,55 +127,48 @@
         return;
       }
 
-      const transaksi = { nama, jenis, jumlah, waktu: new Date().toLocaleString() };
-      data.push(transaksi);
+      data.push({ nama, jenis, jumlah, waktu: new Date().toLocaleString() });
       localStorage.setItem("data", JSON.stringify(data));
 
-      // Jika jenis tabungan → kurangi pemasukan
       if (jenis === "tabungan") {
-        tabunganTetap[nama] += jumlah;
-        localStorage.setItem("tabunganTetap", JSON.stringify(tabunganTetap));
+        tabungan[nama] += jumlah;
+        localStorage.setItem("tabungan", JSON.stringify(tabungan));
       }
 
       document.getElementById("jumlah").value = "";
       updateUI();
-    }
+    });
 
-    // ====== Fungsi Update UI ======
     function updateUI() {
       let pemasukan = { Cristian: 0, Maharani: 0 };
       let pengeluaran = { Cristian: 0, Maharani: 0 };
 
-      data.forEach(item => {
-        if (item.jenis === "pemasukan") pemasukan[item.nama] += item.jumlah;
-        else if (item.jenis === "pengeluaran") pengeluaran[item.nama] += item.jumlah;
+      data.forEach(i => {
+        if (i.jenis === "pemasukan") pemasukan[i.nama] += i.jumlah;
+        else if (i.jenis === "pengeluaran") pengeluaran[i.nama] += i.jumlah;
       });
 
-      // Hitung sisa
-      const sisaCristian = pemasukan.Cristian - pengeluaran.Cristian - tabunganTetap.Cristian;
-      const sisaMaharani = pemasukan.Maharani - pengeluaran.Maharani - tabunganTetap.Maharani;
+      const sisaC = pemasukan.Cristian - pengeluaran.Cristian - tabungan.Cristian;
+      const sisaM = pemasukan.Maharani - pengeluaran.Maharani - tabungan.Maharani;
 
-      // Update tampilan
       document.getElementById("pemasukanCristian").textContent = pemasukan.Cristian.toLocaleString();
       document.getElementById("pemasukanMaharani").textContent = pemasukan.Maharani.toLocaleString();
-      document.getElementById("tabunganCristian").textContent = tabunganTetap.Cristian.toLocaleString();
-      document.getElementById("tabunganMaharani").textContent = tabunganTetap.Maharani.toLocaleString();
-      document.getElementById("sisaCristian").textContent = sisaCristian.toLocaleString();
-      document.getElementById("sisaMaharani").textContent = sisaMaharani.toLocaleString();
+      document.getElementById("tabunganCristian").textContent = tabungan.Cristian.toLocaleString();
+      document.getElementById("tabunganMaharani").textContent = tabungan.Maharani.toLocaleString();
+      document.getElementById("sisaCristian").textContent = sisaC.toLocaleString();
+      document.getElementById("sisaMaharani").textContent = sisaM.toLocaleString();
 
-      // Update riwayat
-      const list = document.getElementById("riwayat");
-      list.innerHTML = "";
+      const riwayat = document.getElementById("riwayat");
+      riwayat.innerHTML = "";
       data.slice().reverse().forEach(item => {
         const li = document.createElement("li");
         li.textContent = `${item.waktu} — ${item.nama} ${item.jenis} Rp${item.jumlah.toLocaleString()}`;
         li.className = item.jenis === "pemasukan" ? "green" :
                        item.jenis === "pengeluaran" ? "red" : "";
-        list.appendChild(li);
+        riwayat.appendChild(li);
       });
     }
 
-    // ====== Jalankan Saat Awal ======
     updateUI();
   </script>
 </body>

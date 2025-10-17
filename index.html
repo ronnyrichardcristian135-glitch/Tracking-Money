@@ -7,58 +7,73 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #1e1e2f;
-  --card-bg: #2a2a3d;
-  --text-color: #e0e0e0;
+  --bg: #f5f6fa;
+  --card-bg: #ffffff;
+  --text-color: #2f3640;
   --accent: #4cafef;
   --danger: #ff4c4c;
   --success: #4caf50;
-  --input-bg: #3a3a4f;
-  --input-border: #555;
+  --input-bg: #f0f0f0;
+  --input-border: #ccc;
+  --shadow: rgba(0,0,0,0.1);
 }
 * { box-sizing:border-box; font-family:'Poppins',sans-serif; }
 body { margin:0; background:var(--bg); color:var(--text-color); }
-header { display:flex; justify-content:space-between; align-items:center; padding:1rem; background:var(--card-bg);}
+header { display:flex; justify-content:space-between; align-items:center; padding:1rem; background:var(--card-bg); box-shadow:0 2px 4px var(--shadow);}
 header h1 { margin:0; font-size:1.5rem; }
 header .icon { cursor:pointer; font-size:1.2rem; }
-nav { display:flex; justify-content:space-around; background:var(--card-bg); border-bottom:1px solid #444; }
-nav button { flex:1; padding:1rem; background:none; border:none; color:var(--text-color); cursor:pointer; font-weight:600; }
-nav button.active { background:var(--accent); color:#fff; }
-.container { padding:1rem; }
+nav { display:flex; justify-content:space-around; background:var(--card-bg); border-bottom:1px solid #ddd; box-shadow:0 1px 2px var(--shadow);}
+nav button { flex:1; padding:1rem; background:none; border:none; color:var(--text-color); cursor:pointer; font-weight:600; transition:0.3s; }
+nav button.active { background:var(--accent); color:#fff; border-radius:5px; }
+.container { padding:1rem; max-width:1200px; margin:auto; }
 .summary { display:flex; flex-wrap:wrap; gap:1rem; margin-bottom:1rem; }
-.card { flex:1 1 150px; background:var(--card-bg); padding:1rem; border-radius:8px; text-align:center; }
+.card { flex:1 1 180px; background:var(--card-bg); padding:1rem; border-radius:10px; text-align:center; box-shadow:0 2px 6px var(--shadow); }
 .card h3 { margin:0.5rem 0 0.2rem 0; font-size:1rem; }
 .card p { margin:0; font-size:1.2rem; font-weight:600; }
-.form-section { background:var(--card-bg); padding:1rem; border-radius:8px; margin-bottom:1rem; }
-.form-section label { display:block; margin-top:0.5rem; }
+.form-section { background:var(--card-bg); padding:1rem; border-radius:10px; margin-bottom:1rem; box-shadow:0 2px 6px var(--shadow);}
+.form-section label { display:block; margin-top:0.5rem; font-weight:500; }
 .form-section input, .form-section select, .form-section textarea { width:100%; padding:0.5rem; margin-top:0.2rem; border-radius:5px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color); }
-.form-section button { margin-top:0.5rem; padding:0.5rem 1rem; background:var(--accent); border:none; color:#fff; border-radius:5px; cursor:pointer; }
-.history { background:var(--card-bg); padding:1rem; border-radius:8px; max-height:300px; overflow-y:auto; }
-.history-item { display:flex; flex-direction:column; justify-content:space-between; padding:0.5rem 0; border-bottom:1px solid #444; }
+.form-section button { margin-top:0.5rem; padding:0.5rem 1rem; background:var(--accent); border:none; color:#fff; border-radius:5px; cursor:pointer; transition:0.3s; }
+.form-section button:hover { background:#2196f3; }
+.history { background:var(--card-bg); padding:1rem; border-radius:10px; max-height:300px; overflow-y:auto; box-shadow:0 2px 6px var(--shadow);}
+.history-item { display:flex; flex-direction:column; justify-content:space-between; padding:0.5rem 0; border-bottom:1px solid #eee; }
 .history-item-main { display:flex; justify-content:space-between; align-items:center; }
-.history-item button { background:var(--danger); border:none; color:#fff; border-radius:3px; padding:0 5px; cursor:pointer; margin-left:5px;}
-.payment-item { display:flex; justify-content:space-between; margin-left:10px; margin-top:3px; }
-.payment-item button { background:var(--danger); padding:0 5px; font-size:0.9rem; }
+.history-item button { background:var(--danger); border:none; color:#fff; border-radius:3px; padding:0 5px; cursor:pointer; margin-left:5px; font-size:0.9rem;}
+.payment-item { display:flex; justify-content:space-between; margin-left:10px; margin-top:3px; font-size:0.9rem; }
+.payment-item button { background:var(--danger); padding:0 5px; font-size:0.8rem; }
 .payment-form { display:flex; gap:5px; margin-left:10px; margin-top:5px; }
 .payment-form input, .payment-form select { flex:1; padding:0.3rem; font-size:0.9rem; }
-@media(max-width:768px){ .summary { flex-direction:column; } }
+.top-filter { display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:1rem; align-items:center; }
+.top-filter select { padding:0.5rem; border-radius:5px; border:1px solid var(--input-border); background:var(--input-bg); }
+@media(max-width:768px){ .summary { flex-direction:column; } .top-filter { flex-direction:column; align-items:flex-start; } }
 </style>
 </head>
 <body>
 
 <header>
   <h1>Web Finansial</h1>
-  <div class="icon" title="Riset Data">&#128269;</div>
+  <div class="icon" title="Riset Data" onclick="resetData()">&#128269;</div>
 </header>
 
-<nav>
-  <button class="nav-btn active" data-target="penghasilan">Penghasilan</button>
-  <button class="nav-btn" data-target="tabungan">Tabungan</button>
-  <button class="nav-btn" data-target="pengeluaran">Pengeluaran</button>
-  <button class="nav-btn" data-target="hutang">Hutang Aktif</button>
-</nav>
-
 <div class="container">
+
+  <!-- Filter Tahun & Bulan -->
+  <div class="top-filter">
+    <label>Tahun
+      <select id="filter-tahun" onchange="loadData()"></select>
+    </label>
+    <label>Bulan
+      <select id="filter-bulan" onchange="loadData()">
+        <option value="1">Januari</option><option value="2">Februari</option>
+        <option value="3">Maret</option><option value="4">April</option>
+        <option value="5">Mei</option><option value="6">Juni</option>
+        <option value="7">Juli</option><option value="8">Agustus</option>
+        <option value="9">September</option><option value="10">Oktober</option>
+        <option value="11">November</option><option value="12">Desember</option>
+      </select>
+    </label>
+  </div>
+
   <!-- Ringkasan Cepat -->
   <div class="summary" id="summary">
     <div class="card"><h3>Pemasukan Cristian</h3><p id="sum-cristian">Rp0</p></div>
@@ -68,14 +83,22 @@ nav button.active { background:var(--accent); color:#fff; }
     <div class="card"><h3>Pengeluaran Bersama</h3><p id="sum-pengeluaran-bersama">Rp0</p></div>
   </div>
 
-  <!-- Form Input & History Sections -->
+  <!-- Navigation -->
+  <nav>
+    <button class="nav-btn active" data-target="penghasilan">Penghasilan</button>
+    <button class="nav-btn" data-target="tabungan">Tabungan</button>
+    <button class="nav-btn" data-target="pengeluaran">Pengeluaran</button>
+    <button class="nav-btn" data-target="hutang">Hutang Aktif</button>
+  </nav>
+
+  <!-- Section Penghasilan -->
   <div id="penghasilan" class="section">
     <div class="form-section">
       <h3>Input Penghasilan</h3>
       <label>Nama</label>
       <select id="input-penghasilan-nama"><option value="Cristian">Cristian</option><option value="Maharani">Maharani</option></select>
-      <label>Nominal</label>
-      <input type="number" id="input-penghasilan-nominal" placeholder="1000000">
+      <label>Nominal (Ribuan)</label>
+      <input type="number" id="input-penghasilan-nominal" placeholder="1000">
       <label>Keterangan</label>
       <textarea id="input-penghasilan-ket" rows="2"></textarea>
       <button onclick="addPenghasilan()">Tambah</button>
@@ -83,6 +106,7 @@ nav button.active { background:var(--accent); color:#fff; }
     <div class="history" id="history-penghasilan"></div>
   </div>
 
+  <!-- Section Tabungan -->
   <div id="tabungan" class="section" style="display:none">
     <div class="form-section">
       <h3>Input Tabungan</h3>
@@ -91,7 +115,6 @@ nav button.active { background:var(--accent); color:#fff; }
         <option value="Tetap">Tetap</option>
         <option value="Bersama">Bersama</option>
       </select>
-
       <div id="tabungan-nama-div">
         <label>Nama (jika Tetap)</label>
         <select id="input-tabungan-nama">
@@ -99,25 +122,27 @@ nav button.active { background:var(--accent); color:#fff; }
           <option value="Maharani">Maharani</option>
         </select>
       </div>
-
-      <label>Nominal</label>
-      <input type="number" id="input-tabungan-nominal" placeholder="1000000">
-
+      <label>Nominal (Ribuan)</label>
+      <input type="number" id="input-tabungan-nominal" placeholder="1000">
       <label>Keterangan</label>
       <textarea id="input-tabungan-ket" rows="2"></textarea>
-
       <button onclick="addTabungan()">Tambah</button>
     </div>
     <div class="history" id="history-tabungan"></div>
   </div>
 
+  <!-- Section Pengeluaran -->
   <div id="pengeluaran" class="section" style="display:none">
     <div class="form-section">
       <h3>Input Pengeluaran</h3>
       <label>Sumber Dana</label>
-      <select id="input-pengeluaran-sumber"><option value="Cristian">Pemasukan Cristian</option><option value="Maharani">Pemasukan Maharani</option><option value="Bersama">Tabungan Bersama</option></select>
-      <label>Nominal</label>
-      <input type="number" id="input-pengeluaran-nominal" placeholder="1000000">
+      <select id="input-pengeluaran-sumber">
+        <option value="Cristian">Pemasukan Cristian</option>
+        <option value="Maharani">Pemasukan Maharani</option>
+        <option value="Bersama">Tabungan Bersama</option>
+      </select>
+      <label>Nominal (Ribuan)</label>
+      <input type="number" id="input-pengeluaran-nominal" placeholder="1000">
       <label>Keterangan</label>
       <textarea id="input-pengeluaran-ket" rows="2"></textarea>
       <button onclick="addPengeluaran()">Tambah</button>
@@ -125,13 +150,18 @@ nav button.active { background:var(--accent); color:#fff; }
     <div class="history" id="history-pengeluaran"></div>
   </div>
 
+  <!-- Section Hutang -->
   <div id="hutang" class="section" style="display:none">
     <div class="form-section">
       <h3>Input Hutang Aktif</h3>
       <label>Nama</label>
-      <select id="input-hutang-nama"><option value="Cristian">Cristian</option><option value="Maharani">Maharani</option><option value="Bersama">Bersama</option></select>
-      <label>Nominal</label>
-      <input type="number" id="input-hutang-nominal" placeholder="1000000">
+      <select id="input-hutang-nama">
+        <option value="Cristian">Cristian</option>
+        <option value="Maharani">Maharani</option>
+        <option value="Bersama">Bersama</option>
+      </select>
+      <label>Nominal (Ribuan)</label>
+      <input type="number" id="input-hutang-nominal" placeholder="1000">
       <label>Tanggal Jatuh Tempo</label>
       <input type="date" id="input-hutang-tgl">
       <label>Keterangan</label>
@@ -144,7 +174,7 @@ nav button.active { background:var(--accent); color:#fff; }
 </div>
 
 <script>
-// Navigation
+// ----- Navigation -----
 const navBtns=document.querySelectorAll('.nav-btn');
 navBtns.forEach(btn=>btn.addEventListener('click',()=>{
   document.querySelectorAll('.section').forEach(s=>s.style.display='none');
@@ -153,64 +183,196 @@ navBtns.forEach(btn=>btn.addEventListener('click',()=>{
   btn.classList.add('active');
 }));
 
-// Toggle Nama hanya untuk Tetap
+// ----- Toggle Tabungan Nama -----
 function toggleTabunganNama(){
   const jenis=document.getElementById('input-tabungan-jenis').value;
   const namaDiv=document.getElementById('tabungan-nama-div');
-  if(jenis==='Tetap'){ namaDiv.style.display='block'; } else { namaDiv.style.display='none'; }
+  namaDiv.style.display=(jenis==='Tetap')?'block':'none';
 }
 toggleTabunganNama();
 
-// Data
-let dataPenghasilan=[], dataTabungan=[], dataPengeluaran=[], dataHutang=[];
+// ----- Tahun Filter -----
+const yearSelect=document.getElementById('filter-tahun');
+const currentYear=new Date().getFullYear();
+for(let y=currentYear-5;y<=currentYear+5;y++){
+  const option=document.createElement('option');option.value=y;option.innerText=y;yearSelect.appendChild(option);
+}
+yearSelect.value=currentYear;
 
-// Format Rupiah
-function formatRupiah(num){return 'Rp'+Number(num).toLocaleString('id-ID');}
+// ----- Data Storage -----
+let storageKey='finansialData';
+let data={}; // Struktur: data[tahun][bulan] = {penghasilan:[], tabungan:[], pengeluaran:[], hutang:[]};
 
-// Tambah Data
-function addPenghasilan(){const nama=document.getElementById('input-penghasilan-nama').value;const nominal=Number(document.getElementById('input-penghasilan-nominal').value);const ket=document.getElementById('input-penghasilan-ket').value;const id=Date.now();dataPenghasilan.push({id,nama,nominal,ket});renderHistory('penghasilan');updateSummary();}
-function addTabungan(){const jenis=document.getElementById('input-tabungan-jenis').value;const nama=jenis==='Tetap'?document.getElementById('input-tabungan-nama').value:'Bersama';const nominal=Number(document.getElementById('input-tabungan-nominal').value);const ket=document.getElementById('input-tabungan-ket').value;const id=Date.now();dataTabungan.push({id,jenis,nama,nominal,ket});renderHistory('tabungan');updateSummary();}
-function addPengeluaran(){const sumber=document.getElementById('input-pengeluaran-sumber').value;const nominal=Number(document.getElementById('input-pengeluaran-nominal').value);const ket=document.getElementById('input-pengeluaran-ket').value;const id=Date.now();dataPengeluaran.push({id,sumber,nominal,ket});renderHistory('pengeluaran');updateSummary();}
-function addHutang(){const nama=document.getElementById('input-hutang-nama').value;const nominal=Number(document.getElementById('input-hutang-nominal').value);const tgl=document.getElementById('input-hutang-tgl').value;const ket=document.getElementById('input-hutang-ket').value;const id=Date.now();dataHutang.push({id,nama,nominal,tgl,ket,pembayaran:[]});renderHistory('hutang');updateSummary();}
-
-// Render History
-function renderHistory(section){
-  let container;
-  if(section==='penghasilan'){container=document.getElementById('history-penghasilan');container.innerHTML='';dataPenghasilan.forEach(d=>{const div=document.createElement('div');div.className='history-item';div.innerHTML=`<div class="history-item-main"><span>${d.nama}: ${formatRupiah(d.nominal)} - ${d.ket}</span> <button onclick="deleteItem('penghasilan',${d.id})">Hapus</button></div>`;container.appendChild(div);});}
-  else if(section==='tabungan'){container=document.getElementById('history-tabungan');container.innerHTML='';dataTabungan.forEach(d=>{const div=document.createElement('div');div.className='history-item';div.innerHTML=`<div class="history-item-main"><span>${d.jenis} ${d.nama}: ${formatRupiah(d.nominal)} - ${d.ket}</span> <button onclick="deleteItem('tabungan',${d.id})">Hapus</button></div>`;container.appendChild(div);});}
-  else if(section==='pengeluaran'){container=document.getElementById('history-pengeluaran');container.innerHTML='';dataPengeluaran.forEach(d=>{const div=document.createElement('div');div.className='history-item';div.innerHTML=`<div class="history-item-main"><span>${d.sumber}: ${formatRupiah(d.nominal)} - ${d.ket}</span> <button onclick="deleteItem('pengeluaran',${d.id})">Hapus</button></div>`;container.appendChild(div);});}
-  else if(section==='hutang'){container=document.getElementById('history-hutang');container.innerHTML='';dataHutang.forEach(d=>{const div=document.createElement('div');div.className='history-item';
-    const mainInfo=document.createElement('div');mainInfo.className='history-item-main';mainInfo.innerHTML=`<span>${d.nama}: ${formatRupiah(d.nominal)} - ${d.tgl} - ${d.ket}</span> <button onclick="deleteItem('hutang',${d.id})">Hapus</button>`;
-    const paymentList=document.createElement('div');paymentList.style.marginTop='5px';
-    d.pembayaran.forEach((p,index)=>{const payItem=document.createElement('div');payItem.className='payment-item';payItem.innerHTML=`${p.sumber}: ${formatRupiah(p.nominal)} <button onclick="cancelPayment(${d.id},${index})">Batalkan</button>`;paymentList.appendChild(payItem);});
-    const formDiv=document.createElement('div');formDiv.className='payment-form';formDiv.innerHTML=`<select id="hutang-sumber-${d.id}"><option value="Cristian">Cristian</option><option value="Maharani">Maharani</option><option value="Bersama">Bersama</option></select><input type="number" id="hutang-nominal-${d.id}" placeholder="Nominal"><button onclick="addPayment(${d.id})">Tambah Pembayaran</button>`;
-    div.appendChild(mainInfo);div.appendChild(paymentList);div.appendChild(formDiv);container.appendChild(div);
-  });}
+// ----- Utility -----
+function formatRibuan(num){return 'Rp'+Number(num*1000).toLocaleString('id-ID');} // input ribuan
+function getCurrentYM(){return {year:parseInt(yearSelect.value), month:parseInt(document.getElementById('filter-bulan').value)};}
+function saveData(){localStorage.setItem(storageKey, JSON.stringify(data));}
+function loadData(){
+  const {year, month}=getCurrentYM();
+  if(!data[year])data[year]={};
+  if(!data[year][month])data[year][month]={penghasilan:[],tabungan:[],pengeluaran:[],hutang:[]};
+  renderAll();
 }
 
-// Delete Item
-function deleteItem(section,id){if(section==='penghasilan'){dataPenghasilan=dataPenghasilan.filter(d=>d.id!==id);renderHistory('penghasilan');}else if(section==='tabungan'){dataTabungan=dataTabungan.filter(d=>d.id!==id);renderHistory('tabungan');}else if(section==='pengeluaran'){dataPengeluaran=dataPengeluaran.filter(d=>d.id!==id);renderHistory('pengeluaran');}else if(section==='hutang'){dataHutang=dataHutang.filter(d=>d.id!==id);renderHistory('hutang');}updateSummary();}
+// ----- Add Functions -----
+function addPenghasilan(){
+  const {year,month}=getCurrentYM();
+  const nama=document.getElementById('input-penghasilan-nama').value;
+  const nominal=Number(document.getElementById('input-penghasilan-nominal').value);
+  if(!nominal)return alert('Isi nominal!');
+  const ket=document.getElementById('input-penghasilan-ket').value;
+  const id=Date.now();
+  data[year][month].penghasilan.push({id,nama,nominal,ket});
+  saveData();renderAll();
+}
+function addTabungan(){
+  const {year,month}=getCurrentYM();
+  const jenis=document.getElementById('input-tabungan-jenis').value;
+  const nama=(jenis==='Tetap')?document.getElementById('input-tabungan-nama').value:'Bersama';
+  const nominal=Number(document.getElementById('input-tabungan-nominal').value);
+  if(!nominal)return alert('Isi nominal!');
+  const ket=document.getElementById('input-tabungan-ket').value;
+  const id=Date.now();
+  data[year][month].tabungan.push({id,jenis,nama,nominal,ket});
+  saveData();renderAll();
+}
+function addPengeluaran(){
+  const {year,month}=getCurrentYM();
+  const sumber=document.getElementById('input-pengeluaran-sumber').value;
+  const nominal=Number(document.getElementById('input-pengeluaran-nominal').value);
+  if(!nominal)return alert('Isi nominal!');
+  const ket=document.getElementById('input-pengeluaran-ket').value;
+  const id=Date.now();
+  data[year][month].pengeluaran.push({id,sumber,nominal,ket});
+  saveData();renderAll();
+}
+function addHutang(){
+  const {year,month}=getCurrentYM();
+  const nama=document.getElementById('input-hutang-nama').value;
+  const nominal=Number(document.getElementById('input-hutang-nominal').value);
+  if(!nominal)return alert('Isi nominal!');
+  const tgl=document.getElementById('input-hutang-tgl').value;
+  const ket=document.getElementById('input-hutang-ket').value;
+  const id=Date.now();
+  data[year][month].hutang.push({id,nama,nominal,tgl,ket,pembayaran:[]});
+  saveData();renderAll();
+}
 
-// Payment Hutang
-function addPayment(hutangId){const hutang=dataHutang.find(d=>d.id===hutangId);if(!hutang)return;const sumber=document.getElementById(`hutang-sumber-${hutangId}`).value;const nominal=Number(document.getElementById(`hutang-nominal-${hutangId}`).value);if(!nominal||nominal<=0)return;hutang.pembayaran.push({sumber,nominal});renderHistory('hutang');updateSummary();}
-function cancelPayment(hutangId,index){const hutang=dataHutang.find(d=>d.id===hutangId);if(!hutang)return;hutang.pembayaran.splice(index,1);renderHistory('hutang');updateSummary();}
+// ----- Render History -----
+function renderAll(){
+  const {year, month}=getCurrentYM();
+  const d=data[year][month];
+  // Penghasilan
+  const hp=document.getElementById('history-penghasilan'); hp.innerHTML='';
+  d.penghasilan.forEach(item=>{
+    const div=document.createElement('div'); div.className='history-item';
+    div.innerHTML=`<div class="history-item-main"><span>${item.nama}: ${formatRibuan(item.nominal)} - ${item.ket}</span> <button onclick="deleteItem('penghasilan',${item.id})">Hapus</button></div>`;
+    hp.appendChild(div);
+  });
+  // Tabungan
+  const ht=document.getElementById('history-tabungan'); ht.innerHTML='';
+  d.tabungan.forEach(item=>{
+    const div=document.createElement('div'); div.className='history-item';
+    div.innerHTML=`<div class="history-item-main"><span>${item.jenis} ${item.nama}: ${formatRibuan(item.nominal)} - ${item.ket}</span> <button onclick="deleteItem('tabungan',${item.id})">Hapus</button></div>`;
+    ht.appendChild(div);
+  });
+  // Pengeluaran
+  const he=document.getElementById('history-pengeluaran'); he.innerHTML='';
+  d.pengeluaran.forEach(item=>{
+    const div=document.createElement('div'); div.className='history-item';
+    div.innerHTML=`<div class="history-item-main"><span>${item.sumber}: ${formatRibuan(item.nominal)} - ${item.ket}</span> <button onclick="deleteItem('pengeluaran',${item.id})">Hapus</button></div>`;
+    he.appendChild(div);
+  });
+  // Hutang
+  const hh=document.getElementById('history-hutang'); hh.innerHTML='';
+  d.hutang.forEach(item=>{
+    const div=document.createElement('div'); div.className='history-item';
+    const mainInfo=document.createElement('div'); mainInfo.className='history-item-main';
+    mainInfo.innerHTML=`<span>${item.nama}: ${formatRibuan(item.nominal)} - ${item.tgl} - ${item.ket}</span> <button onclick="deleteItem('hutang',${item.id})">Hapus</button>`;
+    const paymentList=document.createElement('div'); paymentList.style.marginTop='5px';
+    item.pembayaran.forEach((p,index)=>{
+      const payItem=document.createElement('div'); payItem.className='payment-item';
+      payItem.innerHTML=`${p.sumber}: ${formatRibuan(p.nominal)} <button onclick="cancelPayment(${item.id},${index})">Batalkan</button>`;
+      paymentList.appendChild(payItem);
+    });
+    const formDiv=document.createElement('div'); formDiv.className='payment-form';
+    formDiv.innerHTML=`<select id="hutang-sumber-${item.id}"><option value="Cristian">Cristian</option><option value="Maharani">Maharani</option><option value="Bersama">Bersama</option></select><input type="number" id="hutang-nominal-${item.id}" placeholder="Ribuan"><button onclick="addPayment(${item.id})">Tambah Pembayaran</button>`;
+    div.appendChild(mainInfo); div.appendChild(paymentList); div.appendChild(formDiv);
+    hh.appendChild(div);
+  });
+  updateSummary();
+}
 
-// Update Summary
+// ----- Delete -----
+function deleteItem(section,id){
+  const {year, month}=getCurrentYM();
+  data[year][month][section]=data[year][month][section].filter(d=>d.id!==id);
+  saveData(); renderAll();
+}
+
+// ----- Payment Hutang -----
+function addPayment(hutangId){
+  const {year, month}=getCurrentYM();
+  const hutang=data[year][month].hutang.find(d=>d.id===hutangId);
+  if(!hutang)return;
+  const sumber=document.getElementById(`hutang-sumber-${hutangId}`).value;
+  const nominal=Number(document.getElementById(`hutang-nominal-${hutangId}`).value);
+  if(!nominal || nominal<=0) return alert('Nominal harus lebih dari 0!');
+  hutang.pembayaran.push({sumber,nominal});
+  saveData(); renderAll();
+}
+function cancelPayment(hutangId,index){
+  const {year, month}=getCurrentYM();
+  const hutang=data[year][month].hutang.find(d=>d.id===hutangId);
+  if(!hutang)return;
+  hutang.pembayaran.splice(index,1);
+  saveData(); renderAll();
+}
+
+// ----- Update Summary -----
 function updateSummary(){
+  const {year, month}=getCurrentYM();
+  const d=data[year][month];
   let sumCristian=0,sumMaharani=0,sumTabTetap=0,sumTabBersama=0,sumPengBersama=0;
   let totalCristian=0,totalMaharani=0;
-  dataPenghasilan.forEach(d=>{if(d.nama==='Cristian')totalCristian+=d.nominal;else totalMaharani+=d.nominal;});
-  let tabTetap=0,tabBersama=0;dataTabungan.forEach(d=>{if(d.jenis==='Tetap')tabTetap+=d.nominal;else tabBersama+=d.nominal;});
-  let pengBersama=0;dataPengeluaran.forEach(d=>{if(d.sumber==='Cristian')totalCristian-=d.nominal;else if(d.sumber==='Maharani')totalMaharani-=d.nominal;else if(d.sumber==='Bersama'){pengBersama+=d.nominal;tabBersama-=d.nominal;}});
-  dataTabungan.forEach(d=>{if(d.jenis==='Tetap'){if(d.nama==='Cristian')totalCristian-=d.nominal;else totalMaharani-=d.nominal;}else{totalCristian-=d.nominal/2;totalMaharani-=d.nominal/2;}});
-  dataHutang.forEach(h=>{h.pembayaran.forEach(p=>{if(p.sumber==='Cristian')totalCristian-=p.nominal;else if(p.sumber==='Maharani')totalMaharani-=p.nominal;else if(p.sumber==='Bersama'){totalCristian-=p.nominal/2;totalMaharani-=p.nominal/2;}})});
-  sumCristian=totalCristian;sumMaharani=totalMaharani;sumTabTetap=tabTetap;sumTabBersama=tabBersama;sumPengBersama=pengBersama;
-  document.getElementById('sum-cristian').innerText=formatRupiah(sumCristian);
-  document.getElementById('sum-maharani').innerText=formatRupiah(sumMaharani);
-  document.getElementById('sum-tabungan-tetap').innerText=formatRupiah(sumTabTetap);
-  document.getElementById('sum-tabungan-bersama').innerText=formatRupiah(sumTabBersama);
-  document.getElementById('sum-pengeluaran-bersama').innerText=formatRupiah(sumPengBersama);
+  d.penghasilan.forEach(p=>p.nama==='Cristian'?totalCristian+=p.nominal:totalMaharani+=p.nominal);
+  d.tabungan.forEach(t=>{
+    if(t.jenis==='Tetap'){ t.nama==='Cristian'?totalCristian-=t.nominal:totalMaharani-=t.nominal; sumTabTetap+=t.nominal;}
+    else{totalCristian-=t.nominal/2; totalMaharani-=t.nominal/2; sumTabBersama+=t.nominal;}
+  });
+  d.pengeluaran.forEach(e=>{
+    if(e.sumber==='Cristian') totalCristian-=e.nominal;
+    else if(e.sumber==='Maharani') totalMaharani-=e.nominal;
+    else if(e.sumber==='Bersama'){ sumPengBersama+=e.nominal; sumTabBersama-=e.nominal; totalCristian-=e.nominal/2; totalMaharani-=e.nominal/2; }
+  });
+  d.hutang.forEach(h=>{
+    h.pembayaran.forEach(p=>{
+      if(p.sumber==='Cristian') totalCristian-=p.nominal;
+      else if(p.sumber==='Maharani') totalMaharani-=p.nominal;
+      else{totalCristian-=p.nominal/2; totalMaharani-=p.nominal/2;}
+    });
+  });
+  document.getElementById('sum-cristian').innerText=formatRibuan(totalCristian);
+  document.getElementById('sum-maharani').innerText=formatRibuan(totalMaharani);
+  document.getElementById('sum-tabungan-tetap').innerText=formatRibuan(sumTabTetap);
+  document.getElementById('sum-tabungan-bersama').innerText=formatRibuan(sumTabBersama);
+  document.getElementById('sum-pengeluaran-bersama').innerText=formatRibuan(sumPengBersama);
 }
+
+// ----- Riset Data -----
+function resetData(){
+  if(confirm('Yakin ingin riset data? Semua data bulan ini akan hilang.')){
+    const {year, month}=getCurrentYM();
+    data[year][month]={penghasilan:[],tabungan:[],pengeluaran:[],hutang:[]};
+    saveData(); renderAll();
+  }
+}
+
+// ----- Init -----
+const stored=localStorage.getItem(storageKey);
+if(stored) data=JSON.parse(stored);
+loadData();
+
 </script>
 
 </body>

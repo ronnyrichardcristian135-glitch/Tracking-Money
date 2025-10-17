@@ -87,13 +87,25 @@ nav button.active { background:var(--accent); color:#fff; }
     <div class="form-section">
       <h3>Input Tabungan</h3>
       <label>Jenis Tabungan</label>
-      <select id="input-tabungan-jenis" onchange="toggleTabunganNama()"><option value="Tetap">Tetap</option><option value="Bersama">Bersama</option></select>
-      <label>Nama (jika Tetap)</label>
-      <select id="input-tabungan-nama"><option value="Cristian">Cristian</option><option value="Maharani">Maharani</option></select>
+      <select id="input-tabungan-jenis" onchange="toggleTabunganNama()">
+        <option value="Tetap">Tetap</option>
+        <option value="Bersama">Bersama</option>
+      </select>
+
+      <div id="tabungan-nama-div">
+        <label>Nama (jika Tetap)</label>
+        <select id="input-tabungan-nama">
+          <option value="Cristian">Cristian</option>
+          <option value="Maharani">Maharani</option>
+        </select>
+      </div>
+
       <label>Nominal</label>
       <input type="number" id="input-tabungan-nominal" placeholder="1000000">
+
       <label>Keterangan</label>
       <textarea id="input-tabungan-ket" rows="2"></textarea>
+
       <button onclick="addTabungan()">Tambah</button>
     </div>
     <div class="history" id="history-tabungan"></div>
@@ -140,13 +152,19 @@ navBtns.forEach(btn=>btn.addEventListener('click',()=>{
   navBtns.forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
 }));
-function toggleTabunganNama(){const jenis=document.getElementById('input-tabungan-jenis').value;document.getElementById('input-tabungan-nama').parentElement.style.display=jenis==='Tetap'?'block':'none';}
+
+// Toggle Nama hanya untuk Tetap
+function toggleTabunganNama(){
+  const jenis=document.getElementById('input-tabungan-jenis').value;
+  const namaDiv=document.getElementById('tabungan-nama-div');
+  if(jenis==='Tetap'){ namaDiv.style.display='block'; } else { namaDiv.style.display='none'; }
+}
 toggleTabunganNama();
 
 // Data
 let dataPenghasilan=[], dataTabungan=[], dataPengeluaran=[], dataHutang=[];
 
-// Format Rp
+// Format Rupiah
 function formatRupiah(num){return 'Rp'+Number(num).toLocaleString('id-ID');}
 
 // Tambah Data
@@ -185,7 +203,7 @@ function updateSummary(){
   let tabTetap=0,tabBersama=0;dataTabungan.forEach(d=>{if(d.jenis==='Tetap')tabTetap+=d.nominal;else tabBersama+=d.nominal;});
   let pengBersama=0;dataPengeluaran.forEach(d=>{if(d.sumber==='Cristian')totalCristian-=d.nominal;else if(d.sumber==='Maharani')totalMaharani-=d.nominal;else if(d.sumber==='Bersama'){pengBersama+=d.nominal;tabBersama-=d.nominal;}});
   dataTabungan.forEach(d=>{if(d.jenis==='Tetap'){if(d.nama==='Cristian')totalCristian-=d.nominal;else totalMaharani-=d.nominal;}else{totalCristian-=d.nominal/2;totalMaharani-=d.nominal/2;}});
-  dataHutang.forEach(d=>{d.pembayaran.forEach(p=>{if(p.sumber==='Cristian')totalCristian-=p.nominal;else if(p.sumber==='Maharani')totalMaharani-=p.nominal;else if(p.sumber==='Bersama'){totalCristian-=p.nominal/2;totalMaharani-=p.nominal/2;}})});
+  dataHutang.forEach(h=>{h.pembayaran.forEach(p=>{if(p.sumber==='Cristian')totalCristian-=p.nominal;else if(p.sumber==='Maharani')totalMaharani-=p.nominal;else if(p.sumber==='Bersama'){totalCristian-=p.nominal/2;totalMaharani-=p.nominal/2;}})});
   sumCristian=totalCristian;sumMaharani=totalMaharani;sumTabTetap=tabTetap;sumTabBersama=tabBersama;sumPengBersama=pengBersama;
   document.getElementById('sum-cristian').innerText=formatRupiah(sumCristian);
   document.getElementById('sum-maharani').innerText=formatRupiah(sumMaharani);
@@ -193,7 +211,6 @@ function updateSummary(){
   document.getElementById('sum-tabungan-bersama').innerText=formatRupiah(sumTabBersama);
   document.getElementById('sum-pengeluaran-bersama').innerText=formatRupiah(sumPengBersama);
 }
-
 </script>
 
 </body>

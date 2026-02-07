@@ -6,21 +6,70 @@
 
 <style>
 :root{
-  --primary:#1f2937;
-  --accent:#2563eb;
-  --bg:#f3f4f6;
+  --bg1:#0f172a;
+  --bg2:#020617;
   --card:#ffffff;
+  --accent:#3b82f6;
+  --text:#0f172a;
 }
+*{box-sizing:border-box}
 body{
+  margin:0;
   font-family:system-ui,-apple-system,Segoe UI,Roboto;
-  background:var(--bg);
-  margin:20px;
+  background:linear-gradient(135deg,var(--bg1),var(--bg2));
+  color:white;
 }
-h1{color:var(--primary)}
+.app{
+  display:grid;
+  grid-template-columns:260px 1fr;
+  min-height:100vh;
+}
+.sidebar{
+  background:rgba(255,255,255,0.05);
+  backdrop-filter:blur(10px);
+  padding:20px;
+}
+.sidebar h2{
+  font-size:18px;
+  margin-bottom:15px;
+}
+.side-item{
+  background:rgba(255,255,255,0.1);
+  padding:10px;
+  border-radius:8px;
+  margin-bottom:10px;
+  cursor:pointer;
+}
+.side-item:hover{background:rgba(255,255,255,0.2)}
+.main{
+  padding:30px;
+  overflow:auto;
+}
+.card{
+  background:var(--card);
+  color:var(--text);
+  border-radius:14px;
+  padding:20px;
+  margin-bottom:30px;
+  box-shadow:0 20px 40px rgba(0,0,0,.3);
+}
+h1{margin-top:0}
+input{
+  width:100%;
+  padding:6px;
+}
+button{
+  padding:8px 14px;
+  border:none;
+  border-radius:8px;
+  background:var(--accent);
+  color:white;
+  cursor:pointer;
+}
+button.hapus{background:#dc2626}
 table{
   width:100%;
   border-collapse:collapse;
-  background:#fff;
   margin-top:10px;
 }
 th,td{
@@ -28,29 +77,9 @@ th,td{
   padding:6px;
   text-align:center;
 }
-th{background:#f9fafb}
-input{
-  width:100%;
-  box-sizing:border-box;
-  padding:4px;
-}
-button{
-  padding:6px 12px;
-  border:none;
-  border-radius:6px;
-  background:var(--accent);
-  color:white;
-  cursor:pointer;
-}
-button.hapus{
-  background:#dc2626;
-}
+th{background:#f1f5f9}
 .karyawan{
-  background:var(--card);
-  border-radius:10px;
-  padding:15px;
-  margin-bottom:30px;
-  box-shadow:0 10px 25px rgba(0,0,0,.08);
+  scroll-margin-top:20px;
 }
 .summary{
   display:grid;
@@ -58,13 +87,13 @@ button.hapus{
   gap:10px;
   margin-top:15px;
 }
-.card{
-  background:#f9fafb;
+.sum-box{
+  background:#f8fafc;
+  border-radius:10px;
   padding:10px;
-  border-radius:8px;
   text-align:center;
 }
-.big{font-size:1.1em;font-weight:600}
+.big{font-size:1.1em;font-weight:700}
 .green{color:#16a34a}
 .red{color:#dc2626}
 .jamnum{width:55px;text-align:center}
@@ -73,48 +102,56 @@ button.hapus{
 
 <body>
 
-<h1>PT ATMB<br><small>Payroll 2 Minggu</small></h1>
+<div class="app">
 
-<label>Tanggal Mulai Periode</label>
-<input type="date" id="tanggalMulai">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <h2>📊 Ringkasan Karyawan</h2>
+    <div id="sideList"></div>
+  </div>
 
-<br><br>
-<button id="btnTambah">+ Tambah Karyawan</button>
+  <!-- MAIN -->
+  <div class="main">
+    <h1>PT ATMB<br><small>Payroll 2 Minggu</small></h1>
 
-<hr>
+    <div class="card">
+      Tanggal Mulai Periode
+      <input type="date" id="tanggalMulai"><br><br>
+      <button id="btnTambah">+ Tambah Karyawan</button>
+    </div>
 
-<div id="list"></div>
+    <div id="list"></div>
+  </div>
+
+</div>
 
 <script>
 document.addEventListener("DOMContentLoaded",()=>{
 
 const hari=["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
 const list=document.getElementById("list");
+const side=document.getElementById("sideList");
 
 function ddmmyy(d){
   return String(d.getDate()).padStart(2,'0')+'-'+
          String(d.getMonth()+1).padStart(2,'0')+'-'+
          String(d.getFullYear()).slice(-2);
 }
-
-function jamKeMenit(j,m){
+function menit(j,m){
   j=Number(j); m=Number(m);
   if(isNaN(j)||isNaN(m)||m>59||j<0) return null;
   return j*60+m;
 }
-
 function tabel(){
-  let h=`<table>
+  let t=`<table>
   <tr>
     <th>Tgl</th><th>Hari</th>
     <th colspan="2">Masuk</th>
     <th colspan="2">Pulang</th>
-    <th>Kotor</th>
-    <th>Ist</th>
-    <th>Bersih</th>
+    <th>Kotor</th><th>Ist</th><th>Bersih</th>
   </tr>`;
   for(let i=0;i<14;i++){
-    h+=`
+    t+=`
     <tr data-i="${i}">
       <td class="tgl"></td>
       <td class="hari"></td>
@@ -127,14 +164,13 @@ function tabel(){
       <td class="bersih">0</td>
     </tr>`;
   }
-  return h+'</table>';
+  return t+"</table>";
 }
 
 function refreshTanggal(){
-  const start=tanggalMulai.value;
-  if(!start) return;
+  const s=tanggalMulai.value;
   document.querySelectorAll('[data-i]').forEach(r=>{
-    const d=new Date(start);
+    const d=new Date(s);
     d.setDate(d.getDate()+Number(r.dataset.i));
     r.querySelector('.tgl').innerText=ddmmyy(d);
     r.querySelector('.hari').innerText=hari[d.getDay()];
@@ -142,44 +178,45 @@ function refreshTanggal(){
 }
 
 function tambahKaryawan(nama){
-  const d=document.createElement('div');
-  d.className='karyawan';
+  const id="k"+Date.now();
+  const d=document.createElement("div");
+  d.className="card karyawan";
+  d.id=id;
+
   d.innerHTML=`
     <b>Nama Karyawan</b>
-    <input value="${nama}">
+    <input class="nama" value="${nama}">
     <button class="hapus">Hapus</button><br><br>
 
-    Gaji / Jam <input class="gaji" type="number" value="20000">
-    Tunjangan Makan / Hari <input class="makan" type="number" value="15000">
+    Gaji/Jam <input class="gaji" type="number" value="20000">
+    Tunjangan/Hari <input class="makan" type="number" value="15000">
     Kasbon <input class="kasbon red" type="number" value="0">
 
     ${tabel()}
 
     <div class="summary">
-      <div class="card">Jam Kotor<br><span class="big jkTot">0</span></div>
-      <div class="card">Jam Istirahat<br><span class="big jrTot">0</span></div>
-      <div class="card">Jam Bersih<br><span class="big jbTot">0</span></div>
-      <div class="card">Tunjangan<br><span class="big green tmTot">Rp 0</span></div>
-      <div class="card">Kasbon<br><span class="big red kbTot">Rp 0</span></div>
-      <div class="card">Gaji Bersih<br><span class="big green gTot">Rp 0</span></div>
+      <div class="sum-box">Jam Bersih<br><span class="big jb">0</span></div>
+      <div class="sum-box">Kasbon<br><span class="big red kb">Rp 0</span></div>
+      <div class="sum-box">Gaji Bersih<br><span class="big green gajiB">Rp 0</span></div>
     </div>
   `;
-  d.querySelector('.hapus').onclick=()=>{d.remove()};
+  d.querySelector(".hapus").onclick=()=>{d.remove(); renderSidebar()};
   list.appendChild(d);
   refreshTanggal();
+  renderSidebar();
   hitung();
 }
 
 function hitung(){
-  document.querySelectorAll('.karyawan').forEach(k=>{
-    let jk=0,jr=0,jb=0,tm=0;
-    const gj=+k.querySelector('.gaji').value||0;
-    const um=+k.querySelector('.makan').value||0;
-    const kb=+k.querySelector('.kasbon').value||0;
+  document.querySelectorAll(".karyawan").forEach(k=>{
+    let jb=0, makan=0;
+    const g=+k.querySelector(".gaji").value||0;
+    const mkn=+k.querySelector(".makan").value||0;
+    const kb=+k.querySelector(".kasbon").value||0;
 
-    k.querySelectorAll('[data-i]').forEach(r=>{
-      let m1=jamKeMenit(r.querySelector('.jm').value,r.querySelector('.mm').value);
-      let m2=jamKeMenit(r.querySelector('.jk').value,r.querySelector('.mk').value);
+    k.querySelectorAll("[data-i]").forEach(r=>{
+      let m1=menit(r.querySelector(".jm").value,r.querySelector(".mm").value);
+      let m2=menit(r.querySelector(".jk").value,r.querySelector(".mk").value);
       if(m1!==null && m2!==null){
         let kotor=(m2-m1)/60;
         let ist=0;
@@ -187,30 +224,41 @@ function hitung(){
         else if(kotor>9) ist=2;
         else if(kotor>4) ist=1;
         let bersih=kotor-ist;
-        jk+=kotor; jr+=ist; jb+=bersih;
-        tm+=bersih>0?um:0;
-        r.querySelector('.kotor').innerText=kotor.toFixed(2);
-        r.querySelector('.rest').innerText=ist;
-        r.querySelector('.bersih').innerText=bersih.toFixed(2);
+        jb+=bersih;
+        makan+=bersih>0?mkn:0;
+        r.querySelector(".kotor").innerText=kotor.toFixed(2);
+        r.querySelector(".rest").innerText=ist;
+        r.querySelector(".bersih").innerText=bersih.toFixed(2);
       }
     });
+    const gaji=(jb*g)+makan-kb;
+    k.querySelector(".jb").innerText=jb.toFixed(2);
+    k.querySelector(".kb").innerText="Rp "+kb.toLocaleString();
+    k.querySelector(".gajiB").innerText="Rp "+gaji.toLocaleString();
+  });
+  renderSidebar();
+}
 
-    const gaji=(jb*gj)+tm-kb;
-    k.querySelector('.jkTot').innerText=jk.toFixed(2);
-    k.querySelector('.jrTot').innerText=jr.toFixed(2);
-    k.querySelector('.jbTot').innerText=jb.toFixed(2);
-    k.querySelector('.tmTot').innerText='Rp '+tm.toLocaleString();
-    k.querySelector('.kbTot').innerText='Rp '+kb.toLocaleString();
-    k.querySelector('.gTot').innerText='Rp '+gaji.toLocaleString();
+function renderSidebar(){
+  side.innerHTML="";
+  document.querySelectorAll(".karyawan").forEach(k=>{
+    const nama=k.querySelector(".nama").value;
+    const jam=k.querySelector(".jb").innerText;
+    const gaji=k.querySelector(".gajiB").innerText;
+    const div=document.createElement("div");
+    div.className="side-item";
+    div.innerHTML=`<b>${nama}</b><br>${jam} jam<br>${gaji}`;
+    div.onclick=()=>k.scrollIntoView({behavior:"smooth"});
+    side.appendChild(div);
   });
 }
 
-btnTambah.onclick=()=>tambahKaryawan('Karyawan Baru');
-document.body.addEventListener('input',hitung);
-document.body.addEventListener('change',()=>{refreshTanggal();hitung();});
+btnTambah.onclick=()=>tambahKaryawan("Karyawan Baru");
+document.body.addEventListener("input",hitung);
+document.body.addEventListener("change",()=>{refreshTanggal();hitung();});
 
-tanggalMulai.value=new Date().toISOString().split('T')[0];
-for(let i=1;i<=3;i++) tambahKaryawan('Karyawan '+i);
+tanggalMulai.value=new Date().toISOString().split("T")[0];
+for(let i=1;i<=3;i++) tambahKaryawan("Karyawan "+i);
 
 });
 </script>

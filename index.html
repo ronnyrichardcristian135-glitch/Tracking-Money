@@ -14,14 +14,14 @@ input{width:100%;box-sizing:border-box}
 .card{background:#fff;padding:15px;border-radius:6px;flex:1}
 .green{color:green}
 .red{color:red}
-button{padding:5px 10px}
+button{padding:6px 12px;cursor:pointer}
 </style>
 </head>
 <body>
 
 <h1>Payroll 2 Minggu</h1>
 
-Tanggal Mulai:
+<label>Tanggal Mulai:</label>
 <input type="date" id="tanggalMulai">
 
 <div class="dashboard">
@@ -35,20 +35,75 @@ Tanggal Mulai:
   </div>
 </div>
 
-<button onclick="tambahKaryawan()">+ Tambah Karyawan</button>
+<button id="btnTambah">+ Tambah Karyawan</button>
 
 <div id="listKaryawan"></div>
 
 <script>
-const hari = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
+document.addEventListener("DOMContentLoaded",()=>{
+
+const hari=["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
+const list=document.getElementById("listKaryawan");
+const btnTambah=document.getElementById("btnTambah");
 
 function fmtTanggal(d){
-  const dd=String(d.getDate()).padStart(2,'0');
-  const mm=String(d.getMonth()+1).padStart(2,'0');
-  const yy=String(d.getFullYear()).slice(-2);
-  return `${dd}-${mm}-${yy}`;
+  return String(d.getDate()).padStart(2,'0')+"-"+
+         String(d.getMonth()+1).padStart(2,'0')+"-"+
+         String(d.getFullYear()).slice(-2);
 }
 
-function tabelHari(){
-  let h=`<table>
-  <tr><th>Tanggal</th><th>Hari</th><th>
+function buatTabel(){
+  let t=`<table>
+  <tr><th>Tanggal</th><th>Hari</th><th>Masuk</th><th>Keluar</th><th>x2</th><th>Jam</th></tr>`;
+  for(let i=0;i<14;i++){
+    t+=`<tr data-i="${i}">
+      <td class="tgl"></td>
+      <td class="hari"></td>
+      <td><input type="time"></td>
+      <td><input type="time"></td>
+      <td><input type="checkbox"></td>
+      <td class="jam">0</td>
+    </tr>`;
+  }
+  return t+"</table>";
+}
+
+function refreshTanggal(){
+  const start=document.getElementById("tanggalMulai").value;
+  if(!start) return;
+  document.querySelectorAll("[data-i]").forEach(r=>{
+    const d=new Date(start);
+    d.setDate(d.getDate()+Number(r.dataset.i));
+    r.querySelector(".tgl").innerText=fmtTanggal(d);
+    r.querySelector(".hari").innerText=hari[d.getDay()];
+  });
+}
+
+function tambahKaryawan(nama="Karyawan"){
+  const div=document.createElement("div");
+  div.className="karyawan";
+  div.innerHTML=`
+    Nama: <input value="${nama}">
+    <button class="hapus">Hapus</button><br><br>
+
+    Gaji/Jam: <input type="number" class="gaji" value="20000">
+    Tunjangan/Hari: <input type="number" class="makan" value="15000">
+    Kasbon: <input type="number" class="kasbon red" value="0">
+
+    ${buatTabel()}
+
+    <b>Total Jam:</b> <span class="tj">0</span><br>
+    <b>Gaji Bersih:</b> <span class="tg green">Rp 0</span>
+  `;
+  div.querySelector(".hapus").addEventListener("click",()=>{
+    div.remove(); hitung();
+  });
+  list.appendChild(div);
+  refreshTanggal();
+  hitung();
+}
+
+function hitung(){
+  let gJam=0,gGaji=0;
+
+  document.querySelectorAll(".karyawan").forEach(k=>{

@@ -29,19 +29,20 @@ body{
   background:rgba(255,255,255,0.06);
   backdrop-filter:blur(10px);
   padding:20px;
+  overflow:auto;
 }
 .sidebar h2{
   margin-top:0;
-  margin-bottom:15px;
+  margin-bottom:12px;
 }
 .menu-item{
   background:rgba(255,255,255,0.12);
   border-radius:12px;
   padding:12px;
-  margin-bottom:12px;
-  cursor:pointer;
+  margin-bottom:10px;
 }
-.menu-item:hover{
+.menu-item.clickable{cursor:pointer}
+.menu-item.clickable:hover{
   background:rgba(255,255,255,0.22);
 }
 
@@ -98,6 +99,7 @@ th{background:#f1f5f9}
 .big{font-weight:700}
 .green{color:#16a34a}
 .red{color:#dc2626}
+hr{border:none;border-top:1px solid rgba(255,255,255,.25);margin:18px 0}
 </style>
 </head>
 
@@ -108,6 +110,11 @@ th{background:#f1f5f9}
   <div class="sidebar">
     <h2>📋 Ringkasan Total Karyawan</h2>
     <div id="menuKaryawan"></div>
+
+    <hr>
+
+    <h2>📊 Ringkasan Total</h2>
+    <div id="menuTotal"></div>
   </div>
 
   <!-- MAIN -->
@@ -131,6 +138,7 @@ document.addEventListener("DOMContentLoaded",()=>{
 const hari=["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
 const list=document.getElementById("list");
 const menu=document.getElementById("menuKaryawan");
+const menuTotal=document.getElementById("menuTotal");
 
 function ddmmyy(d){
   return String(d.getDate()).padStart(2,'0')+'-'+
@@ -243,19 +251,25 @@ function hitung(){
 
 function renderMenu(){
   menu.innerHTML="";
+  menuTotal.innerHTML="";
+
   document.querySelectorAll(".karyawan").forEach(k=>{
     const nama=k.querySelector(".nama").value;
     const jam=k.querySelector(".jb").innerText;
     const gaji=k.querySelector(".gb").innerText;
+
+    // MENU ATAS (NAVIGASI)
     const item=document.createElement("div");
-    item.className="menu-item";
-    item.innerHTML=`
-      <b>${nama}</b><br>
-      Total Jam : ${jam}<br>
-      Total Gaji : ${gaji}
-    `;
+    item.className="menu-item clickable";
+    item.innerHTML=`<b>${nama}</b><br>Total Jam : ${jam}<br>Total Gaji : ${gaji}`;
     item.onclick=()=>k.scrollIntoView({behavior:"smooth"});
     menu.appendChild(item);
+
+    // MENU BAWAH (REKAP FINAL)
+    const total=document.createElement("div");
+    total.className="menu-item";
+    total.innerHTML=`<b>${nama}</b><br>Total Jam : ${jam}<br>Total Gaji : ${gaji}`;
+    menuTotal.appendChild(total);
   });
 }
 

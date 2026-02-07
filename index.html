@@ -5,32 +5,134 @@
 <title>Finance Salary</title>
 
 <style>
-body{
-  font-family:Arial, sans-serif;
-  background:#f2f4f7;
-  margin:20px;
-}
-h1,h3{margin:10px 0}
-button{padding:6px 12px;cursor:pointer}
-input{width:100%;box-sizing:border-box}
-table{
-  width:100%;
-  border-collapse:collapse;
-  background:#fff;
-  margin-top:10px
-}
-th,td{
-  border:1px solid #ccc;
-  padding:5px;
-  text-align:center
-}
+body{font-family:Arial;background:#f2f4f7;margin:20px}
+table{width:100%;border-collapse:collapse;background:#fff;margin-top:10px}
+th,td{border:1px solid #ccc;padding:5px;text-align:center}
 th{background:#eee}
-.dashboard{
-  display:flex;
-  gap:20px;
-  margin:15px 0
+button{padding:6px 12px;margin:5px 0}
+input{width:100%;box-sizing:border-box}
+.karyawan{border:2px solid #999;padding:10px;margin-bottom:20px;background:#fafafa}
+.green{color:green}
+</style>
+</head>
+
+<body>
+
+<h2>Payroll 2 Minggu (SAFE MODE)</h2>
+
+<label>Tanggal Mulai:</label>
+<input type="date" id="tanggalMulai">
+
+<br><br>
+<button id="btnTambah">+ Tambah Karyawan</button>
+
+<h3>Total Jam: <span id="totJam">0</span></h3>
+<h3>Total Gaji: <span id="totGaji">Rp 0</span></h3>
+
+<hr>
+
+<div id="list"></div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+
+const hari=["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
+const list=document.getElementById("list");
+const btn=document.getElementById("btnTambah");
+
+function ddmmyy(d){
+  return String(d.getDate()).padStart(2,"0")+"-"+
+         String(d.getMonth()+1).padStart(2,"0")+"-"+
+         String(d.getFullYear()).slice(-2);
 }
-.card{
-  background:#fff;
-  padding:15px;
-  border-radi
+
+function tabel(){
+  let t="<table><tr><th>Tgl</th><th>Hari</th><th>Masuk</th><th>Keluar</th><th>Jam</th></tr>";
+  for(let i=0;i<14;i++){
+    t+=`<tr data-i="${i}">
+      <td class="tgl"></td>
+      <td class="hari"></td>
+      <td><input type="time"></td>
+      <td><input type="time"></td>
+      <td class="jam">0</td>
+    </tr>`;
+  }
+  return t+"</table>";
+}
+
+function refreshTanggal(){
+  const start=document.getElementById("tanggalMulai").value;
+  if(!start) return;
+  document.querySelectorAll("[data-i]").forEach(r=>{
+    const d=new Date(start);
+    d.setDate(d.getDate()+Number(r.dataset.i));
+    r.querySelector(".tgl").innerText=ddmmyy(d);
+    r.querySelector(".hari").innerText=hari[d.getDay()];
+  });
+}
+
+function tambahKaryawan(nama){
+  const div=document.createElement("div");
+  div.className="karyawan";
+  div.innerHTML=`
+    Nama: <input value="${nama}"><br>
+    Gaji/Jam: <input class="gaji" type="number" value="20000"><br>
+    Kasbon: <input class="kasbon" type="number" value="0"><br>
+    ${tabel()}
+    <b>Jam:</b> <span class="jTot">0</span><br>
+    <b>Gaji:</b> <span class="gTot green">Rp 0</span>
+  `;
+  list.appendChild(div);
+  refreshTanggal();
+  hitung();
+}
+
+function hitung(){
+  let TJ=0, TG=0;
+
+  document.querySelectorAll(".karyawan").forEach(k=>{
+    let jam=0;
+    const gj=+k.querySelector(".gaji").value||0;
+    const kb=+k.querySelector(".kasbon").value||0;
+
+    k.querySelectorAll("[data-i]").forEach(r=>{
+      let j=0;
+      const m=r.children[2].children[0].value;
+      const k2=r.children[3].children[0].value;
+      if(m && k2){
+        let a=new Date("1970-01-01T"+m);
+        let b=new Date("1970-01-01T"+k2);
+        j=(b-a)/36e5;
+        if(j<0) j+=24;
+      }
+      r.querySelector(".jam").innerText=j.toFixed(2);
+      jam+=j;
+    });
+
+    const gaji=(jam*gj)-kb;
+    k.querySelector(".jTot").innerText=jam.toFixed(2);
+    k.querySelector(".gTot").innerText="Rp "+gaji.toLocaleString();
+
+    TJ+=jam;
+    TG+=gaji;
+  });
+
+  document.getElementById("totJam").innerText=TJ.toFixed(2);
+  document.getElementById("totGaji").innerText="Rp "+TG.toLocaleString();
+}
+
+btn.addEventListener("click",()=>tambahKaryawan("Karyawan"));
+document.body.addEventListener("input",hitung);
+document.body.addEventListener("change",()=>{refreshTanggal();hitung();});
+
+document.getElementById("tanggalMulai").value=
+  new Date().toISOString().split("T")[0];
+
+// default 3 dulu (biar ringan & pasti jalan)
+for(let i=1;i<=3;i++) tambahKaryawan("Karyawan "+i);
+
+});
+</script>
+
+</body>
+</html>

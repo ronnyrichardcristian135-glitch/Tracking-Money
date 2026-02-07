@@ -2,108 +2,35 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>Finance Salary - Payroll 2 Minggu</title>
+<title>Finance Salary</title>
+
 <style>
-body{font-family:Arial;background:#f4f6f8;margin:20px}
-table{border-collapse:collapse;width:100%;background:#fff;margin-bottom:10px}
-th,td{border:1px solid #ccc;padding:5px;text-align:center}
-th{background:#eee}
-input{width:100%;box-sizing:border-box}
-.karyawan{border:2px solid #999;padding:10px;margin-bottom:20px;background:#fafafa}
-.dashboard{display:flex;gap:20px;margin-bottom:20px}
-.card{background:#fff;padding:15px;border-radius:6px;flex:1}
-.green{color:green}
-.red{color:red}
+body{
+  font-family:Arial, sans-serif;
+  background:#f2f4f7;
+  margin:20px;
+}
+h1,h3{margin:10px 0}
 button{padding:6px 12px;cursor:pointer}
-</style>
-</head>
-<body>
-
-<h1>Payroll 2 Minggu</h1>
-
-<label>Tanggal Mulai:</label>
-<input type="date" id="tanggalMulai">
-
-<div class="dashboard">
-  <div class="card">
-    <b>Total Jam</b>
-    <h2 id="grandJam">0</h2>
-  </div>
-  <div class="card">
-    <b>Total Gaji Bersih</b>
-    <h2 class="green" id="grandGaji">Rp 0</h2>
-  </div>
-</div>
-
-<button id="btnTambah">+ Tambah Karyawan</button>
-
-<div id="listKaryawan"></div>
-
-<script>
-document.addEventListener("DOMContentLoaded",()=>{
-
-const hari=["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
-const list=document.getElementById("listKaryawan");
-const btnTambah=document.getElementById("btnTambah");
-
-function fmtTanggal(d){
-  return String(d.getDate()).padStart(2,'0')+"-"+
-         String(d.getMonth()+1).padStart(2,'0')+"-"+
-         String(d.getFullYear()).slice(-2);
+input{width:100%;box-sizing:border-box}
+table{
+  width:100%;
+  border-collapse:collapse;
+  background:#fff;
+  margin-top:10px
 }
-
-function buatTabel(){
-  let t=`<table>
-  <tr><th>Tanggal</th><th>Hari</th><th>Masuk</th><th>Keluar</th><th>x2</th><th>Jam</th></tr>`;
-  for(let i=0;i<14;i++){
-    t+=`<tr data-i="${i}">
-      <td class="tgl"></td>
-      <td class="hari"></td>
-      <td><input type="time"></td>
-      <td><input type="time"></td>
-      <td><input type="checkbox"></td>
-      <td class="jam">0</td>
-    </tr>`;
-  }
-  return t+"</table>";
+th,td{
+  border:1px solid #ccc;
+  padding:5px;
+  text-align:center
 }
-
-function refreshTanggal(){
-  const start=document.getElementById("tanggalMulai").value;
-  if(!start) return;
-  document.querySelectorAll("[data-i]").forEach(r=>{
-    const d=new Date(start);
-    d.setDate(d.getDate()+Number(r.dataset.i));
-    r.querySelector(".tgl").innerText=fmtTanggal(d);
-    r.querySelector(".hari").innerText=hari[d.getDay()];
-  });
+th{background:#eee}
+.dashboard{
+  display:flex;
+  gap:20px;
+  margin:15px 0
 }
-
-function tambahKaryawan(nama="Karyawan"){
-  const div=document.createElement("div");
-  div.className="karyawan";
-  div.innerHTML=`
-    Nama: <input value="${nama}">
-    <button class="hapus">Hapus</button><br><br>
-
-    Gaji/Jam: <input type="number" class="gaji" value="20000">
-    Tunjangan/Hari: <input type="number" class="makan" value="15000">
-    Kasbon: <input type="number" class="kasbon red" value="0">
-
-    ${buatTabel()}
-
-    <b>Total Jam:</b> <span class="tj">0</span><br>
-    <b>Gaji Bersih:</b> <span class="tg green">Rp 0</span>
-  `;
-  div.querySelector(".hapus").addEventListener("click",()=>{
-    div.remove(); hitung();
-  });
-  list.appendChild(div);
-  refreshTanggal();
-  hitung();
-}
-
-function hitung(){
-  let gJam=0,gGaji=0;
-
-  document.querySelectorAll(".karyawan").forEach(k=>{
+.card{
+  background:#fff;
+  padding:15px;
+  border-radi

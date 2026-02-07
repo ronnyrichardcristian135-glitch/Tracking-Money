@@ -2,17 +2,18 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>Payroll 2 Minggu</title>
+<title>Finance Salary - Payroll 2 Minggu</title>
 <style>
 body { font-family: Arial, sans-serif; background:#f4f6f8; margin:20px; }
-h2 { margin-top:30px; }
-table { border-collapse: collapse; width:100%; background:#fff; }
-th, td { border:1px solid #ccc; padding:6px; text-align:center; }
+h1,h2,h3 { margin:10px 0; }
+table { border-collapse: collapse; width:100%; background:#fff; margin-bottom:20px; }
+th, td { border:1px solid #ccc; padding:5px; text-align:center; }
 th { background:#eee; }
 input[type="number"], input[type="time"], input[type="date"], input[type="text"] {
   width:100%; box-sizing:border-box;
 }
-.dashboard { display:flex; gap:20px; }
+button { padding:5px 10px; cursor:pointer; }
+.dashboard { display:flex; gap:20px; margin-bottom:20px; }
 .card {
   background:#fff; padding:15px; border-radius:6px;
   box-shadow:0 0 5px rgba(0,0,0,.1);
@@ -20,137 +21,123 @@ input[type="number"], input[type="time"], input[type="date"], input[type="text"]
 }
 .green { color:green; }
 .red { color:red; }
-button { padding:6px 10px; cursor:pointer; }
+.karyawan { border:2px solid #999; padding:10px; margin-bottom:25px; background:#fafafa; }
 </style>
 </head>
 <body>
 
-<h1>Payroll 2 Minggu</h1>
+<h1>Payroll 2 Minggu – Multi Karyawan</h1>
 
 <div class="dashboard">
   <div class="card">
-    <h3>Total Jam</h3>
-    <h2 id="totalJam">0</h2>
+    <h3>Total Jam Semua Karyawan</h3>
+    <h2 id="grandJam">0</h2>
   </div>
   <div class="card">
-    <h3>Total Gaji</h3>
-    <h2 class="green" id="totalGaji">Rp 0</h2>
-  </div>
-  <div class="card">
-    <h3>Total Kasbon</h3>
-    <h2 class="red" id="totalKasbon">Rp 0</h2>
+    <h3>Total Gaji Dibayarkan</h3>
+    <h2 class="green" id="grandGaji">Rp 0</h2>
   </div>
 </div>
 
-<h2>Data Karyawan</h2>
-<table>
-<tr>
-  <th>Nama</th>
-  <th>Gaji / Jam</th>
-  <th>Tunjangan Makan / Hari</th>
-</tr>
-<tr>
-  <td><input id="nama" value="Karyawan A"></td>
-  <td><input id="gajiJam" type="number" value="20000"></td>
-  <td><input id="uangMakan" type="number" value="15000"></td>
-</tr>
-</table>
+<button onclick="tambahKaryawan()">+ Tambah Karyawan</button>
 
-<h2>Jam Kerja (2 Minggu)</h2>
-<table id="jamTable">
-<tr>
-  <th>Tanggal</th>
-  <th>Hari</th>
-  <th>Masuk</th>
-  <th>Keluar</th>
-  <th>×2</th>
-  <th>Durasi (Jam)</th>
-</tr>
-</table>
-
-<h2>Kasbon</h2>
-<table id="kasbonTable">
-<tr>
-  <th>Keterangan</th>
-  <th>Nominal</th>
-  <th>Aksi</th>
-</tr>
-</table>
-<button onclick="tambahKasbon()">+ Tambah Kasbon</button>
+<div id="listKaryawan"></div>
 
 <script>
 const hariIndo = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
 
-function initTanggal() {
-  const table = document.getElementById("jamTable");
+function buatTabelHari() {
+  let html = `
+  <table>
+  <tr>
+    <th>Tanggal</th><th>Hari</th><th>Masuk</th><th>Keluar</th><th>x2</th><th>Jam</th>
+  </tr>`;
   const start = new Date();
-  for (let i=0;i<14;i++) {
+  for(let i=0;i<14;i++){
     const d = new Date(start);
     d.setDate(start.getDate()+i);
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
+    html += `
+    <tr>
       <td><input type="date" value="${d.toISOString().split('T')[0]}"></td>
       <td>${hariIndo[d.getDay()]}</td>
       <td><input type="time"></td>
       <td><input type="time"></td>
       <td><input type="checkbox"></td>
-      <td class="durasi">0</td>
-    `;
-    table.appendChild(tr);
+      <td class="jam">0</td>
+    </tr>`;
   }
+  html += `</table>`;
+  return html;
 }
 
-function hitung() {
-  let totalJam = 0;
-  let totalMakan = 0;
-  const gajiJam = +document.getElementById("gajiJam").value;
-  const uangMakan = +document.getElementById("uangMakan").value;
+function tambahKaryawan(nama="Karyawan") {
+  const div = document.createElement("div");
+  div.className = "karyawan";
+  div.innerHTML = `
+    <h3>
+      <input value="${nama}">
+      <button onclick="this.closest('.karyawan').remove(); hitungSemua()">Hapus</button>
+    </h3>
 
-  document.querySelectorAll("#jamTable tr").forEach((tr,i)=>{
-    if(i===0) return;
-    const masuk = tr.children[2].querySelector("input").value;
-    const keluar = tr.children[3].querySelector("input").value;
-    const kali2 = tr.children[4].querySelector("input").checked;
-    let jam = 0;
-    if(masuk && keluar) {
-      const m = new Date("1970-01-01T"+masuk);
-      const k = new Date("1970-01-01T"+keluar);
-      jam = (k-m)/36e5;
-      if(jam < 0) jam += 24;
-      if(kali2) jam *= 2;
-      totalMakan += uangMakan;
-    }
-    tr.querySelector(".durasi").innerText = jam.toFixed(2);
-    totalJam += jam;
-  });
+    Gaji/Jam: <input type="number" class="gajiJam" value="20000">
+    Tunjangan Makan/Hari: <input type="number" class="uangMakan" value="15000">
 
-  let totalKasbon = 0;
-  document.querySelectorAll(".kasbonNominal").forEach(i=>{
-    totalKasbon += +i.value;
-  });
+    ${buatTabelHari()}
 
-  const totalGaji = totalJam * gajiJam + totalMakan - totalKasbon;
-
-  document.getElementById("totalJam").innerText = totalJam.toFixed(2);
-  document.getElementById("totalKasbon").innerText = "Rp "+totalKasbon.toLocaleString();
-  document.getElementById("totalGaji").innerText = "Rp "+totalGaji.toLocaleString();
-}
-
-function tambahKasbon() {
-  const tr = document.createElement("tr");
-  tr.innerHTML = `
-    <td><input></td>
-    <td><input type="number" class="kasbonNominal" value="0"></td>
-    <td><button onclick="this.parentElement.parentElement.remove()">Hapus</button></td>
+    <b>Total Jam:</b> <span class="totalJam">0</span><br>
+    <b>Total Gaji:</b> <span class="totalGaji green">Rp 0</span>
   `;
-  document.getElementById("kasbonTable").appendChild(tr);
+  document.getElementById("listKaryawan").appendChild(div);
 }
 
-document.body.addEventListener("input", hitung);
-document.body.addEventListener("change", hitung);
+function hitungSemua() {
+  let grandJam = 0;
+  let grandGaji = 0;
 
-initTanggal();
-hitung();
+  document.querySelectorAll(".karyawan").forEach(k=>{
+    let totalJam = 0;
+    let totalMakan = 0;
+    const gajiJam = +k.querySelector(".gajiJam").value;
+    const uangMakan = +k.querySelector(".uangMakan").value;
+
+    k.querySelectorAll("table tr").forEach((tr,i)=>{
+      if(i===0) return;
+      const masuk = tr.children[2].querySelector("input").value;
+      const keluar = tr.children[3].querySelector("input").value;
+      const x2 = tr.children[4].querySelector("input").checked;
+      let jam = 0;
+      if(masuk && keluar){
+        const m = new Date("1970-01-01T"+masuk);
+        const k2 = new Date("1970-01-01T"+keluar);
+        jam = (k2-m)/36e5;
+        if(jam<0) jam+=24;
+        if(x2) jam*=2;
+        totalMakan += uangMakan;
+      }
+      tr.querySelector(".jam").innerText = jam.toFixed(2);
+      totalJam += jam;
+    });
+
+    const totalGaji = totalJam * gajiJam + totalMakan;
+    k.querySelector(".totalJam").innerText = totalJam.toFixed(2);
+    k.querySelector(".totalGaji").innerText = "Rp " + totalGaji.toLocaleString();
+
+    grandJam += totalJam;
+    grandGaji += totalGaji;
+  });
+
+  document.getElementById("grandJam").innerText = grandJam.toFixed(2);
+  document.getElementById("grandGaji").innerText = "Rp " + grandGaji.toLocaleString();
+}
+
+document.body.addEventListener("input", hitungSemua);
+document.body.addEventListener("change", hitungSemua);
+
+// BUAT DEFAULT 13 KARYAWAN
+for(let i=1;i<=13;i++){
+  tambahKaryawan("Karyawan "+i);
+}
+hitungSemua();
 </script>
 
 </body>

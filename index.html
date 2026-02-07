@@ -47,7 +47,7 @@ function ddmmyy(d){
          String(d.getFullYear()).slice(-2);
 }
 
-function tabel(){
+function buatTabel(){
   let t=`<table>
   <tr>
     <th>Tgl</th><th>Hari</th><th>Masuk</th><th>Keluar</th><th>x2</th><th>Jam</th>
@@ -87,18 +87,22 @@ function tambahKaryawan(nama){
     <input value="${nama}">
     <button class="hapus">Hapus</button><br><br>
 
-    Gaji/Jam:
+    Gaji / Jam:
     <input type="number" class="gaji" value="20000">
+
+    Tunjangan Makan / Hari:
+    <input type="number" class="makan" value="15000">
 
     Kasbon:
     <input type="number" class="kasbon red" value="0">
 
-    ${tabel()}
+    ${buatTabel()}
 
     <b>Total Jam:</b> <span class="jTot">0</span><br>
     <b>Gaji Bersih:</b> <span class="gTot green">Rp 0</span>
   `;
 
+  // tombol hapus karyawan
   div.querySelector(".hapus").addEventListener("click",()=>{
     div.remove();
     hitung();
@@ -114,28 +118,33 @@ function hitung(){
 
   document.querySelectorAll(".karyawan").forEach(k=>{
     let jamTot=0;
+    let makanTot=0;
+
     const gaji=+k.querySelector(".gaji").value||0;
+    const uangMakan=+k.querySelector(".makan").value||0;
     const kasbon=+k.querySelector(".kasbon").value||0;
 
-    k.querySelectorAll("[data-i]").forEach(r=>{
+    k.querySelectorAll("tr[data-i]").forEach(r=>{
       let jam=0;
-      const masuk=r.children[2].children[0].value;
-      const keluar=r.children[3].children[0].value;
-      const x2=r.children[4].children[0].checked;
+      const masuk=r.querySelector('td:nth-child(3) input').value;
+      const keluar=r.querySelector('td:nth-child(4) input').value;
+      const x2=r.querySelector('td:nth-child(5) input').checked;
 
       if(masuk && keluar){
-        let a=new Date("1970-01-01T"+masuk);
-        let b=new Date("1970-01-01T"+keluar);
+        const a=new Date("1970-01-01T"+masuk);
+        const b=new Date("1970-01-01T"+keluar);
         jam=(b-a)/36e5;
-        if(jam<0) jam+=24;     // shift malam
-        if(x2) jam*=2;        // fitur x2
+        if(jam<0) jam+=24;
+        if(x2) jam*=2;
+
+        if(jam>0) makanTot+=uangMakan;
       }
 
       r.querySelector(".jam").innerText=jam.toFixed(2);
       jamTot+=jam;
     });
 
-    const gajiBersih=(jamTot*gaji)-kasbon;
+    const gajiBersih=(jamTot*gaji)+makanTot-kasbon;
 
     k.querySelector(".jTot").innerText=jamTot.toFixed(2);
     k.querySelector(".gTot").innerText="Rp "+gajiBersih.toLocaleString();
@@ -148,14 +157,16 @@ function hitung(){
   document.getElementById("totGaji").innerText="Rp "+TG.toLocaleString();
 }
 
+// event
 btn.addEventListener("click",()=>tambahKaryawan("Karyawan Baru"));
 document.body.addEventListener("input",hitung);
 document.body.addEventListener("change",()=>{refreshTanggal();hitung();});
 
+// init
 document.getElementById("tanggalMulai").value=
   new Date().toISOString().split("T")[0];
 
-// default 3 karyawan (aman dulu)
+// default 3 karyawan (aman & jelas)
 for(let i=1;i<=3;i++) tambahKaryawan("Karyawan "+i);
 
 });

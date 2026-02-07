@@ -10,6 +10,7 @@
   --bg2:#020617;
   --card:#ffffff;
   --accent:#3b82f6;
+  --danger:#dc2626;
   --text:#0f172a;
 }
 *{box-sizing:border-box}
@@ -21,26 +22,30 @@ body{
 }
 .app{
   display:grid;
-  grid-template-columns:260px 1fr;
+  grid-template-columns:300px 1fr;
   min-height:100vh;
 }
 .sidebar{
-  background:rgba(255,255,255,0.05);
+  background:rgba(255,255,255,0.06);
   backdrop-filter:blur(10px);
   padding:20px;
 }
-.sidebar h2{
-  font-size:18px;
+.sidebar h2{margin-top:0}
+.side-card{
+  background:rgba(255,255,255,0.12);
+  border-radius:10px;
+  padding:12px;
   margin-bottom:15px;
 }
 .side-item{
-  background:rgba(255,255,255,0.1);
-  padding:10px;
+  background:rgba(255,255,255,0.12);
   border-radius:8px;
+  padding:10px;
   margin-bottom:10px;
   cursor:pointer;
 }
 .side-item:hover{background:rgba(255,255,255,0.2)}
+
 .main{
   padding:30px;
   overflow:auto;
@@ -66,7 +71,7 @@ button{
   color:white;
   cursor:pointer;
 }
-button.hapus{background:#dc2626}
+button.hapus{background:var(--danger)}
 table{
   width:100%;
   border-collapse:collapse;
@@ -78,12 +83,10 @@ th,td{
   text-align:center;
 }
 th{background:#f1f5f9}
-.karyawan{
-  scroll-margin-top:20px;
-}
+.jamnum{width:55px;text-align:center}
 .summary{
   display:grid;
-  grid-template-columns:repeat(3,1fr);
+  grid-template-columns:repeat(4,1fr);
   gap:10px;
   margin-top:15px;
 }
@@ -96,17 +99,23 @@ th{background:#f1f5f9}
 .big{font-size:1.1em;font-weight:700}
 .green{color:#16a34a}
 .red{color:#dc2626}
-.jamnum{width:55px;text-align:center}
 </style>
 </head>
 
 <body>
-
 <div class="app">
 
   <!-- SIDEBAR -->
   <div class="sidebar">
-    <h2>📊 Ringkasan Karyawan</h2>
+    <h2>📊 Ringkasan</h2>
+
+    <div class="side-card">
+      <b>Total Semua Karyawan</b><br><br>
+      Jam: <b id="grandJam">0</b><br>
+      Gaji: <b id="grandGaji">Rp 0</b>
+    </div>
+
+    <h3>👷 Per Karyawan</h3>
     <div id="sideList"></div>
   </div>
 
@@ -115,7 +124,7 @@ th{background:#f1f5f9}
     <h1>PT ATMB<br><small>Payroll 2 Minggu</small></h1>
 
     <div class="card">
-      Tanggal Mulai Periode
+      Tanggal Mulai
       <input type="date" id="tanggalMulai"><br><br>
       <button id="btnTambah">+ Tambah Karyawan</button>
     </div>
@@ -148,7 +157,9 @@ function tabel(){
     <th>Tgl</th><th>Hari</th>
     <th colspan="2">Masuk</th>
     <th colspan="2">Pulang</th>
-    <th>Kotor</th><th>Ist</th><th>Bersih</th>
+    <th>Istirahat</th>
+    <th>x2</th>
+    <th>Jam Bersih</th>
   </tr>`;
   for(let i=0;i<14;i++){
     t+=`
@@ -159,8 +170,8 @@ function tabel(){
       <td><input class="jamnum mm"></td>
       <td><input class="jamnum jk"></td>
       <td><input class="jamnum mk"></td>
-      <td class="kotor">0</td>
-      <td class="rest">0</td>
+      <td><input class="jamnum rest" value="0"></td>
+      <td><input type="checkbox" class="x2"></td>
       <td class="bersih">0</td>
     </tr>`;
   }
@@ -178,10 +189,8 @@ function refreshTanggal(){
 }
 
 function tambahKaryawan(nama){
-  const id="k"+Date.now();
   const d=document.createElement("div");
   d.className="card karyawan";
-  d.id=id;
 
   d.innerHTML=`
     <b>Nama Karyawan</b>
@@ -195,9 +204,10 @@ function tambahKaryawan(nama){
     ${tabel()}
 
     <div class="summary">
-      <div class="sum-box">Jam Bersih<br><span class="big jb">0</span></div>
+      <div class="sum-box">Total Jam<br><span class="big jb">0</span></div>
+      <div class="sum-box">Tunjangan<br><span class="big green tm">Rp 0</span></div>
       <div class="sum-box">Kasbon<br><span class="big red kb">Rp 0</span></div>
-      <div class="sum-box">Gaji Bersih<br><span class="big green gajiB">Rp 0</span></div>
+      <div class="sum-box">Gaji Bersih<br><span class="big green gb">Rp 0</span></div>
     </div>
   `;
   d.querySelector(".hapus").onclick=()=>{d.remove(); renderSidebar()};
@@ -208,34 +218,44 @@ function tambahKaryawan(nama){
 }
 
 function hitung(){
+  let grandJam=0, grandGaji=0;
+
   document.querySelectorAll(".karyawan").forEach(k=>{
-    let jb=0, makan=0;
-    const g=+k.querySelector(".gaji").value||0;
+    let jamTot=0, tunj=0;
+    const gj=+k.querySelector(".gaji").value||0;
     const mkn=+k.querySelector(".makan").value||0;
     const kb=+k.querySelector(".kasbon").value||0;
 
     k.querySelectorAll("[data-i]").forEach(r=>{
       let m1=menit(r.querySelector(".jm").value,r.querySelector(".mm").value);
       let m2=menit(r.querySelector(".jk").value,r.querySelector(".mk").value);
+      let rest=+r.querySelector(".rest").value||0;
+      let x2=r.querySelector(".x2").checked;
+
+      let bersih=0;
       if(m1!==null && m2!==null){
-        let kotor=(m2-m1)/60;
-        let ist=0;
-        if(kotor>16) ist=3;
-        else if(kotor>9) ist=2;
-        else if(kotor>4) ist=1;
-        let bersih=kotor-ist;
-        jb+=bersih;
-        makan+=bersih>0?mkn:0;
-        r.querySelector(".kotor").innerText=kotor.toFixed(2);
-        r.querySelector(".rest").innerText=ist;
-        r.querySelector(".bersih").innerText=bersih.toFixed(2);
+        bersih=((m2-m1)/60)-rest;
+        if(bersih<0) bersih=0;
+        if(x2) bersih*=2;
+        jamTot+=bersih;
+        tunj+=bersih>0?mkn:0;
       }
+      r.querySelector(".bersih").innerText=bersih.toFixed(2);
     });
-    const gaji=(jb*g)+makan-kb;
-    k.querySelector(".jb").innerText=jb.toFixed(2);
+
+    const gaji=(jamTot*gj)+tunj-kb;
+
+    k.querySelector(".jb").innerText=jamTot.toFixed(2);
+    k.querySelector(".tm").innerText="Rp "+tunj.toLocaleString();
     k.querySelector(".kb").innerText="Rp "+kb.toLocaleString();
-    k.querySelector(".gajiB").innerText="Rp "+gaji.toLocaleString();
+    k.querySelector(".gb").innerText="Rp "+gaji.toLocaleString();
+
+    grandJam+=jamTot;
+    grandGaji+=gaji;
   });
+
+  document.getElementById("grandJam").innerText=grandJam.toFixed(2);
+  document.getElementById("grandGaji").innerText="Rp "+grandGaji.toLocaleString();
   renderSidebar();
 }
 
@@ -244,7 +264,7 @@ function renderSidebar(){
   document.querySelectorAll(".karyawan").forEach(k=>{
     const nama=k.querySelector(".nama").value;
     const jam=k.querySelector(".jb").innerText;
-    const gaji=k.querySelector(".gajiB").innerText;
+    const gaji=k.querySelector(".gb").innerText;
     const div=document.createElement("div");
     div.className="side-item";
     div.innerHTML=`<b>${nama}</b><br>${jam} jam<br>${gaji}`;

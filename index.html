@@ -22,7 +22,7 @@ body{
 }
 .app{
   display:grid;
-  grid-template-columns:320px 1fr;
+  grid-template-columns:340px 1fr;
   min-height:100vh;
 }
 .sidebar{
@@ -30,15 +30,20 @@ body{
   backdrop-filter:blur(10px);
   padding:20px;
 }
-.sidebar h2{margin-top:0}
+.sidebar h2{
+  margin-top:0;
+  margin-bottom:15px;
+}
 .menu-item{
   background:rgba(255,255,255,0.12);
-  border-radius:10px;
-  padding:10px;
-  margin-bottom:10px;
+  border-radius:12px;
+  padding:12px;
+  margin-bottom:12px;
   cursor:pointer;
 }
-.menu-item:hover{background:rgba(255,255,255,0.22)}
+.menu-item:hover{
+  background:rgba(255,255,255,0.22);
+}
 
 .main{
   padding:30px;
@@ -47,7 +52,7 @@ body{
 .card{
   background:var(--card);
   color:var(--text);
-  border-radius:14px;
+  border-radius:16px;
   padding:20px;
   margin-bottom:30px;
   box-shadow:0 20px 40px rgba(0,0,0,.3);
@@ -60,7 +65,7 @@ input{
 button{
   padding:8px 14px;
   border:none;
-  border-radius:8px;
+  border-radius:10px;
   background:var(--accent);
   color:white;
   cursor:pointer;
@@ -86,7 +91,7 @@ th{background:#f1f5f9}
 }
 .sum-box{
   background:#f8fafc;
-  border-radius:10px;
+  border-radius:12px;
   padding:10px;
   text-align:center;
 }
@@ -101,7 +106,7 @@ th{background:#f1f5f9}
 
   <!-- SIDEBAR -->
   <div class="sidebar">
-    <h2>📋 Ringkasan Karyawan</h2>
+    <h2>📋 Ringkasan Total Karyawan</h2>
     <div id="menuKaryawan"></div>
   </div>
 
@@ -193,7 +198,7 @@ function tambahKaryawan(nama){
       <div class="sum-box">Total Jam<br><span class="big jb">0</span></div>
       <div class="sum-box">Tunjangan<br><span class="big green tm">Rp 0</span></div>
       <div class="sum-box">Kasbon<br><span class="big red kb">Rp 0</span></div>
-      <div class="sum-box">Gaji Bersih<br><span class="big green gb">Rp 0</span></div>
+      <div class="sum-box">Total Gaji<br><span class="big green gb">Rp 0</span></div>
     </div>
   `;
   d.querySelector(".hapus").onclick=()=>{d.remove(); renderMenu()};
@@ -244,7 +249,11 @@ function renderMenu(){
     const gaji=k.querySelector(".gb").innerText;
     const item=document.createElement("div");
     item.className="menu-item";
-    item.innerHTML=`<b>${nama}</b><br>Total Jam: ${jam}<br>Gaji: ${gaji}`;
+    item.innerHTML=`
+      <b>${nama}</b><br>
+      Total Jam : ${jam}<br>
+      Total Gaji : ${gaji}
+    `;
     item.onclick=()=>k.scrollIntoView({behavior:"smooth"});
     menu.appendChild(item);
   });

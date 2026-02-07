@@ -6,7 +6,7 @@
 <style>
 body { font-family: Arial, sans-serif; background:#f4f6f8; margin:20px; }
 h1,h2,h3 { margin:10px 0; }
-table { border-collapse: collapse; width:100%; background:#fff; margin-bottom:20px; }
+table { border-collapse: collapse; width:100%; background:#fff; margin-bottom:15px; }
 th, td { border:1px solid #ccc; padding:5px; text-align:center; }
 th { background:#eee; }
 input[type="number"], input[type="time"], input[type="date"], input[type="text"] {
@@ -20,6 +20,7 @@ button { padding:5px 10px; cursor:pointer; }
   flex:1;
 }
 .green { color:green; }
+.red { color:red; }
 .karyawan { border:2px solid #999; padding:10px; margin-bottom:25px; background:#fafafa; }
 </style>
 </head>
@@ -27,7 +28,6 @@ button { padding:5px 10px; cursor:pointer; }
 
 <h1>Payroll 2 Minggu – Multi Karyawan</h1>
 
-<!-- TANGGAL GLOBAL -->
 <h3>Tanggal Mulai Periode</h3>
 <input type="date" id="tanggalMulai">
 
@@ -37,142 +37,13 @@ button { padding:5px 10px; cursor:pointer; }
     <h2 id="grandJam">0</h2>
   </div>
   <div class="card">
-    <h3>Total Gaji Dibayarkan</h3>
+    <h3>Total Gaji Bersih</h3>
     <h2 class="green" id="grandGaji">Rp 0</h2>
   </div>
 </div>
 
 <button onclick="tambahKaryawan()">+ Tambah Karyawan</button>
-
 <div id="listKaryawan"></div>
 
 <script>
-const hariIndo = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
-
-function tanggalKeHari(tgl){
-  return hariIndo[new Date(tgl).getDay()];
-}
-
-function buatBarisHari(index){
-  return `
-  <tr data-index="${index}">
-    <td class="tgl"></td>
-    <td class="hari"></td>
-    <td><input type="time"></td>
-    <td><input type="time"></td>
-    <td><input type="checkbox"></td>
-    <td class="jam">0</td>
-  </tr>`;
-}
-
-function buatTabelHari(){
-  let html = `
-  <table>
-  <tr>
-    <th>Tanggal</th><th>Hari</th><th>Masuk</th><th>Keluar</th><th>x2</th><th>Jam</th>
-  </tr>`;
-  for(let i=0;i<14;i++){
-    html += buatBarisHari(i);
-  }
-  html += `</table>`;
-  return html;
-}
-
-function refreshTanggalSemua(){
-  const start = document.getElementById("tanggalMulai").value;
-  if(!start) return;
-
-  document.querySelectorAll("tr[data-index]").forEach(tr=>{
-    const i = +tr.dataset.index;
-    const d = new Date(start);
-    d.setDate(d.getDate()+i);
-    const iso = d.toISOString().split("T")[0];
-    tr.querySelector(".tgl").innerText = iso;
-    tr.querySelector(".hari").innerText = tanggalKeHari(iso);
-  });
-}
-
-function tambahKaryawan(nama="Karyawan"){
-  const div = document.createElement("div");
-  div.className = "karyawan";
-  div.innerHTML = `
-    <h3>
-      <input value="${nama}">
-      <button onclick="this.closest('.karyawan').remove(); hitungSemua()">Hapus</button>
-    </h3>
-
-    Gaji/Jam: <input type="number" class="gajiJam" value="20000">
-    Tunjangan Makan/Hari: <input type="number" class="uangMakan" value="15000">
-
-    ${buatTabelHari()}
-
-    <b>Total Jam:</b> <span class="totalJam">0</span><br>
-    <b>Total Gaji:</b> <span class="totalGaji green">Rp 0</span>
-  `;
-  document.getElementById("listKaryawan").appendChild(div);
-  refreshTanggalSemua();
-}
-
-function hitungSemua(){
-  let grandJam = 0;
-  let grandGaji = 0;
-
-  document.querySelectorAll(".karyawan").forEach(k=>{
-    let totalJam = 0;
-    let totalMakan = 0;
-    const gajiJam = +k.querySelector(".gajiJam").value;
-    const uangMakan = +k.querySelector(".uangMakan").value;
-
-    k.querySelectorAll("tr[data-index]").forEach(tr=>{
-      const masuk = tr.children[2].querySelector("input").value;
-      const keluar = tr.children[3].querySelector("input").value;
-      const x2 = tr.children[4].querySelector("input").checked;
-      let jam = 0;
-
-      if(masuk && keluar){
-        const m = new Date("1970-01-01T"+masuk);
-        const k2 = new Date("1970-01-01T"+keluar);
-        jam = (k2-m)/36e5;
-        if(jam < 0) jam += 24; // shift malam
-        if(x2) jam *= 2;
-        totalMakan += uangMakan;
-      }
-
-      tr.querySelector(".jam").innerText = jam.toFixed(2);
-      totalJam += jam;
-    });
-
-    const totalGaji = totalJam * gajiJam + totalMakan;
-    k.querySelector(".totalJam").innerText = totalJam.toFixed(2);
-    k.querySelector(".totalGaji").innerText = "Rp " + totalGaji.toLocaleString();
-
-    grandJam += totalJam;
-    grandGaji += totalGaji;
-  });
-
-  document.getElementById("grandJam").innerText = grandJam.toFixed(2);
-  document.getElementById("grandGaji").innerText = "Rp " + grandGaji.toLocaleString();
-}
-
-document.getElementById("tanggalMulai").addEventListener("change", ()=>{
-  refreshTanggalSemua();
-  hitungSemua();
-});
-
-document.body.addEventListener("input", hitungSemua);
-document.body.addEventListener("change", hitungSemua);
-
-// default tanggal hari ini
-document.getElementById("tanggalMulai").value =
-  new Date().toISOString().split("T")[0];
-
-// default 13 karyawan
-for(let i=1;i<=13;i++){
-  tambahKaryawan("Karyawan "+i);
-}
-refreshTanggalSemua();
-hitungSemua();
-</script>
-
-</body>
-</html>
+const hariIndo = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat"]()

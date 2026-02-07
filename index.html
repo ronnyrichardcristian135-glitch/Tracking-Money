@@ -20,7 +20,7 @@ button{padding:6px 12px;margin:5px 0;cursor:pointer}
 
 <body>
 
-<h2>Payroll 2 Minggu – Jam & Istirahat Bertingkat</h2>
+<h2>Payroll 2 Minggu – Jam & Istirahat</h2>
 
 Tanggal Mulai:
 <input type="date" id="tanggalMulai">
@@ -48,14 +48,12 @@ function ddmmyy(d){
          String(d.getFullYear()).slice(-2);
 }
 
-// =========================
 function jamKeMenit(j,m){
   j=Number(j); m=Number(m);
   if(isNaN(j)||isNaN(m)) return null;
-  if(j < 0 || m < 0 || m > 59) return null;
+  if(j<0||m<0||m>59) return null;
   return j*60+m; // jam boleh >24
 }
-// =========================
 
 function buatTabel(){
   let t=`<table>
@@ -140,7 +138,7 @@ function hitung(){
     const kasbon=+k.querySelector(".kasbon").value||0;
 
     k.querySelectorAll("tr[data-i]").forEach(r=>{
-      let bersih=0, istirahat=0, kotor=0;
+      let kotor=0, istirahat=0, bersih=0;
 
       const jm=r.querySelector(".jm").value;
       const mm=r.querySelector(".mm").value;
@@ -153,11 +151,12 @@ function hitung(){
       if(m1!==null && m2!==null){
         kotor=(m2-m1)/60;
 
-        if(kotor > 16) istirahat=3;
-        else if(kotor > 9) istirahat=2;
-        else if(kotor > 8) istirahat=1;
+        // ISTIRAHAT FINAL (FIX)
+        if (kotor > 16) istirahat = 3;
+        else if (kotor > 9) istirahat = 2;
+        else if (kotor > 4) istirahat = 1;
 
-        bersih=kotor-istirahat;
+        bersih = kotor - istirahat;
         if(bersih>0) makanTot+=uangMakan;
       }
 
@@ -181,16 +180,13 @@ function hitung(){
   document.getElementById("totGaji").innerText="Rp "+TG.toLocaleString();
 }
 
-// EVENT
 btn.addEventListener("click",()=>tambahKaryawan("Karyawan Baru"));
 document.body.addEventListener("input",hitung);
 document.body.addEventListener("change",()=>{refreshTanggal();hitung();});
 
-// INIT
-document.getElementById("tanggalMulai").value=
+document.getElementById("tanggalMulai").value =
   new Date().toISOString().split("T")[0];
 
-// default 3 karyawan
 for(let i=1;i<=3;i++) tambahKaryawan("Karyawan "+i);
 
 });

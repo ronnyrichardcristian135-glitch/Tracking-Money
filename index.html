@@ -14,13 +14,13 @@ button{padding:6px 12px;margin:5px 0;cursor:pointer}
 .karyawan{border:2px solid #999;padding:10px;margin-bottom:25px;background:#fafafa}
 .green{color:green}
 .red{color:red}
-.jam-input{font-family:monospace;text-align:center}
+.jamnum{width:55px;text-align:center}
 </style>
 </head>
 
 <body>
 
-<h2>Payroll 2 Minggu (Jam Indonesia)</h2>
+<h2>Payroll 2 Minggu – Jam & Istirahat Bertingkat</h2>
 
 Tanggal Mulai:
 <input type="date" id="tanggalMulai">
@@ -28,7 +28,7 @@ Tanggal Mulai:
 <br><br>
 <button id="btnTambah">+ Tambah Karyawan</button>
 
-<h3>Total Jam: <span id="totJam">0</span></h3>
+<h3>Total Jam Bersih: <span id="totJam">0</span></h3>
 <h3>Total Gaji: <span class="green" id="totGaji">Rp 0</span></h3>
 
 <hr>
@@ -48,31 +48,36 @@ function ddmmyy(d){
          String(d.getFullYear()).slice(-2);
 }
 
-// ================= JAM MANUAL =================
-function jamKeMenit(val){
-  if(!val || !val.includes(":")) return null;
-  const [j,m]=val.split(":").map(Number);
-  if(isNaN(j)||isNaN(m)||j>23||m>59) return null;
-  return j*60+m;
+// =========================
+function jamKeMenit(j,m){
+  j=Number(j); m=Number(m);
+  if(isNaN(j)||isNaN(m)) return null;
+  if(j < 0 || m < 0 || m > 59) return null;
+  return j*60+m; // jam boleh >24
 }
-// =============================================
+// =========================
 
 function buatTabel(){
   let t=`<table>
   <tr>
     <th>Tgl</th><th>Hari</th>
-    <th>Masuk (HH:MM)</th>
-    <th>Keluar (HH:MM)</th>
-    <th>x2</th><th>Jam</th>
+    <th colspan="2">Masuk</th>
+    <th colspan="2">Pulang</th>
+    <th>Jam Kotor</th>
+    <th>Istirahat</th>
+    <th>Jam Bersih</th>
   </tr>`;
   for(let i=0;i<14;i++){
     t+=`
     <tr data-i="${i}">
       <td class="tgl"></td>
       <td class="hari"></td>
-      <td><input class="jamMasuk jam-input" placeholder="08:00"></td>
-      <td><input class="jamKeluar jam-input" placeholder="17:00"></td>
-      <td><input type="checkbox"></td>
+      <td><input class="jamnum jm"></td>
+      <td><input class="jamnum mm"></td>
+      <td><input class="jamnum jk"></td>
+      <td><input class="jamnum mk"></td>
+      <td class="kotor">0</td>
+      <td class="rest">0</td>
       <td class="jam">0</td>
     </tr>`;
   }
@@ -111,7 +116,7 @@ function tambahKaryawan(nama){
 
     ${buatTabel()}
 
-    <b>Total Jam:</b> <span class="jTot">0</span><br>
+    <b>Total Jam Bersih:</b> <span class="jTot">0</span><br>
     <b>Gaji Bersih:</b> <span class="gTot green">Rp 0</span>
   `;
 
@@ -135,25 +140,32 @@ function hitung(){
     const kasbon=+k.querySelector(".kasbon").value||0;
 
     k.querySelectorAll("tr[data-i]").forEach(r=>{
-      let jam=0;
+      let bersih=0, istirahat=0, kotor=0;
 
-      const masuk=r.querySelector(".jamMasuk").value.trim();
-      const keluar=r.querySelector(".jamKeluar").value.trim();
-      const x2=r.children[4].children[0].checked;
+      const jm=r.querySelector(".jm").value;
+      const mm=r.querySelector(".mm").value;
+      const jk=r.querySelector(".jk").value;
+      const mk=r.querySelector(".mk").value;
 
-      const m1=jamKeMenit(masuk);
-      const m2=jamKeMenit(keluar);
+      const m1=jamKeMenit(jm,mm);
+      const m2=jamKeMenit(jk,mk);
 
       if(m1!==null && m2!==null){
-        let durasi=(m2-m1)/60;
-        if(durasi<0) durasi+=24;
-        if(x2) durasi*=2;
-        jam=durasi;
-        if(jam>0) makanTot+=uangMakan;
+        kotor=(m2-m1)/60;
+
+        if(kotor > 16) istirahat=3;
+        else if(kotor > 9) istirahat=2;
+        else if(kotor > 8) istirahat=1;
+
+        bersih=kotor-istirahat;
+        if(bersih>0) makanTot+=uangMakan;
       }
 
-      r.querySelector(".jam").innerText=jam.toFixed(2);
-      jamTot+=jam;
+      r.querySelector(".kotor").innerText=kotor.toFixed(2);
+      r.querySelector(".rest").innerText=istirahat;
+      r.querySelector(".jam").innerText=bersih.toFixed(2);
+
+      jamTot+=bersih;
     });
 
     const gajiBersih=(jamTot*gaji)+makanTot-kasbon;

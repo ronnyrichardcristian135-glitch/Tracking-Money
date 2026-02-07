@@ -14,12 +14,13 @@ button{padding:6px 12px;margin:5px 0;cursor:pointer}
 .karyawan{border:2px solid #999;padding:10px;margin-bottom:25px;background:#fafafa}
 .green{color:green}
 .red{color:red}
+.jam-input{font-family:monospace;text-align:center}
 </style>
 </head>
 
 <body>
 
-<h2>Payroll 2 Minggu</h2>
+<h2>Payroll 2 Minggu (Jam Indonesia)</h2>
 
 Tanggal Mulai:
 <input type="date" id="tanggalMulai">
@@ -47,18 +48,30 @@ function ddmmyy(d){
          String(d.getFullYear()).slice(-2);
 }
 
+// ================= JAM MANUAL =================
+function jamKeMenit(val){
+  if(!val || !val.includes(":")) return null;
+  const [j,m]=val.split(":").map(Number);
+  if(isNaN(j)||isNaN(m)||j>23||m>59) return null;
+  return j*60+m;
+}
+// =============================================
+
 function buatTabel(){
   let t=`<table>
   <tr>
-    <th>Tgl</th><th>Hari</th><th>Masuk</th><th>Keluar</th><th>x2</th><th>Jam</th>
+    <th>Tgl</th><th>Hari</th>
+    <th>Masuk (HH:MM)</th>
+    <th>Keluar (HH:MM)</th>
+    <th>x2</th><th>Jam</th>
   </tr>`;
   for(let i=0;i<14;i++){
     t+=`
     <tr data-i="${i}">
       <td class="tgl"></td>
       <td class="hari"></td>
-      <td><input type="time"></td>
-      <td><input type="time"></td>
+      <td><input class="jamMasuk jam-input" placeholder="08:00"></td>
+      <td><input class="jamKeluar jam-input" placeholder="17:00"></td>
       <td><input type="checkbox"></td>
       <td class="jam">0</td>
     </tr>`;
@@ -102,10 +115,8 @@ function tambahKaryawan(nama){
     <b>Gaji Bersih:</b> <span class="gTot green">Rp 0</span>
   `;
 
-  // tombol hapus karyawan
   div.querySelector(".hapus").addEventListener("click",()=>{
-    div.remove();
-    hitung();
+    div.remove(); hitung();
   });
 
   list.appendChild(div);
@@ -117,8 +128,7 @@ function hitung(){
   let TJ=0, TG=0;
 
   document.querySelectorAll(".karyawan").forEach(k=>{
-    let jamTot=0;
-    let makanTot=0;
+    let jamTot=0, makanTot=0;
 
     const gaji=+k.querySelector(".gaji").value||0;
     const uangMakan=+k.querySelector(".makan").value||0;
@@ -126,17 +136,19 @@ function hitung(){
 
     k.querySelectorAll("tr[data-i]").forEach(r=>{
       let jam=0;
-      const masuk=r.querySelector('td:nth-child(3) input').value;
-      const keluar=r.querySelector('td:nth-child(4) input').value;
-      const x2=r.querySelector('td:nth-child(5) input').checked;
 
-      if(masuk && keluar){
-        const a=new Date("1970-01-01T"+masuk);
-        const b=new Date("1970-01-01T"+keluar);
-        jam=(b-a)/36e5;
-        if(jam<0) jam+=24;
-        if(x2) jam*=2;
+      const masuk=r.querySelector(".jamMasuk").value.trim();
+      const keluar=r.querySelector(".jamKeluar").value.trim();
+      const x2=r.children[4].children[0].checked;
 
+      const m1=jamKeMenit(masuk);
+      const m2=jamKeMenit(keluar);
+
+      if(m1!==null && m2!==null){
+        let durasi=(m2-m1)/60;
+        if(durasi<0) durasi+=24;
+        if(x2) durasi*=2;
+        jam=durasi;
         if(jam>0) makanTot+=uangMakan;
       }
 
@@ -157,16 +169,16 @@ function hitung(){
   document.getElementById("totGaji").innerText="Rp "+TG.toLocaleString();
 }
 
-// event
+// EVENT
 btn.addEventListener("click",()=>tambahKaryawan("Karyawan Baru"));
 document.body.addEventListener("input",hitung);
 document.body.addEventListener("change",()=>{refreshTanggal();hitung();});
 
-// init
+// INIT
 document.getElementById("tanggalMulai").value=
   new Date().toISOString().split("T")[0];
 
-// default 3 karyawan (aman & jelas)
+// default 3 karyawan
 for(let i=1;i<=3;i++) tambahKaryawan("Karyawan "+i);
 
 });

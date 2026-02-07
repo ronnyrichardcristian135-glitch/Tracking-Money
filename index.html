@@ -2,71 +2,119 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>Finance Salary</title>
+<title>PT ATMB - Payroll</title>
 
 <style>
-body{font-family:Arial;background:#f2f4f7;margin:20px}
-table{width:100%;border-collapse:collapse;background:#fff;margin-top:10px}
-th,td{border:1px solid #ccc;padding:5px;text-align:center}
-th{background:#eee}
-input{width:100%;box-sizing:border-box}
-button{padding:6px 12px;margin:5px 0;cursor:pointer}
-.karyawan{border:2px solid #999;padding:10px;margin-bottom:25px;background:#fafafa}
-.green{color:green}
-.red{color:red}
+:root{
+  --primary:#1f2937;
+  --accent:#2563eb;
+  --bg:#f3f4f6;
+  --card:#ffffff;
+}
+body{
+  font-family:system-ui,-apple-system,Segoe UI,Roboto;
+  background:var(--bg);
+  margin:20px;
+}
+h1{color:var(--primary)}
+table{
+  width:100%;
+  border-collapse:collapse;
+  background:#fff;
+  margin-top:10px;
+}
+th,td{
+  border:1px solid #e5e7eb;
+  padding:6px;
+  text-align:center;
+}
+th{background:#f9fafb}
+input{
+  width:100%;
+  box-sizing:border-box;
+  padding:4px;
+}
+button{
+  padding:6px 12px;
+  border:none;
+  border-radius:6px;
+  background:var(--accent);
+  color:white;
+  cursor:pointer;
+}
+button.hapus{
+  background:#dc2626;
+}
+.karyawan{
+  background:var(--card);
+  border-radius:10px;
+  padding:15px;
+  margin-bottom:30px;
+  box-shadow:0 10px 25px rgba(0,0,0,.08);
+}
+.summary{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin-top:15px;
+}
+.card{
+  background:#f9fafb;
+  padding:10px;
+  border-radius:8px;
+  text-align:center;
+}
+.big{font-size:1.1em;font-weight:600}
+.green{color:#16a34a}
+.red{color:#dc2626}
 .jamnum{width:55px;text-align:center}
 </style>
 </head>
 
 <body>
 
-<h2>Payroll 2 Minggu – Jam & Istirahat</h2>
+<h1>PT ATMB<br><small>Payroll 2 Minggu</small></h1>
 
-Tanggal Mulai:
+<label>Tanggal Mulai Periode</label>
 <input type="date" id="tanggalMulai">
 
 <br><br>
 <button id="btnTambah">+ Tambah Karyawan</button>
-
-<h3>Total Jam Bersih: <span id="totJam">0</span></h3>
-<h3>Total Gaji: <span class="green" id="totGaji">Rp 0</span></h3>
 
 <hr>
 
 <div id="list"></div>
 
 <script>
-document.addEventListener("DOMContentLoaded",function(){
+document.addEventListener("DOMContentLoaded",()=>{
 
 const hari=["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
 const list=document.getElementById("list");
-const btn=document.getElementById("btnTambah");
 
 function ddmmyy(d){
-  return String(d.getDate()).padStart(2,"0")+"-"+
-         String(d.getMonth()+1).padStart(2,"0")+"-"+
+  return String(d.getDate()).padStart(2,'0')+'-'+
+         String(d.getMonth()+1).padStart(2,'0')+'-'+
          String(d.getFullYear()).slice(-2);
 }
 
 function jamKeMenit(j,m){
   j=Number(j); m=Number(m);
-  if(isNaN(j)||isNaN(m)) return null;
-  if(j<0||m<0||m>59) return null;
-  return j*60+m; // jam boleh >24
+  if(isNaN(j)||isNaN(m)||m>59||j<0) return null;
+  return j*60+m;
 }
 
-function buatTabel(){
-  let t=`<table>
+function tabel(){
+  let h=`<table>
   <tr>
     <th>Tgl</th><th>Hari</th>
     <th colspan="2">Masuk</th>
     <th colspan="2">Pulang</th>
-    <th>Jam Kotor</th>
-    <th>Istirahat</th>
-    <th>Jam Bersih</th>
+    <th>Kotor</th>
+    <th>Ist</th>
+    <th>Bersih</th>
   </tr>`;
   for(let i=0;i<14;i++){
-    t+=`
+    h+=`
     <tr data-i="${i}">
       <td class="tgl"></td>
       <td class="hari"></td>
@@ -76,118 +124,93 @@ function buatTabel(){
       <td><input class="jamnum mk"></td>
       <td class="kotor">0</td>
       <td class="rest">0</td>
-      <td class="jam">0</td>
+      <td class="bersih">0</td>
     </tr>`;
   }
-  return t+"</table>";
+  return h+'</table>';
 }
 
 function refreshTanggal(){
-  const start=document.getElementById("tanggalMulai").value;
+  const start=tanggalMulai.value;
   if(!start) return;
-
-  document.querySelectorAll("[data-i]").forEach(r=>{
+  document.querySelectorAll('[data-i]').forEach(r=>{
     const d=new Date(start);
     d.setDate(d.getDate()+Number(r.dataset.i));
-    r.querySelector(".tgl").innerText=ddmmyy(d);
-    r.querySelector(".hari").innerText=hari[d.getDay()];
+    r.querySelector('.tgl').innerText=ddmmyy(d);
+    r.querySelector('.hari').innerText=hari[d.getDay()];
   });
 }
 
 function tambahKaryawan(nama){
-  const div=document.createElement("div");
-  div.className="karyawan";
-
-  div.innerHTML=`
-    Nama:
+  const d=document.createElement('div');
+  d.className='karyawan';
+  d.innerHTML=`
+    <b>Nama Karyawan</b>
     <input value="${nama}">
     <button class="hapus">Hapus</button><br><br>
 
-    Gaji / Jam:
-    <input type="number" class="gaji" value="20000">
+    Gaji / Jam <input class="gaji" type="number" value="20000">
+    Tunjangan Makan / Hari <input class="makan" type="number" value="15000">
+    Kasbon <input class="kasbon red" type="number" value="0">
 
-    Tunjangan Makan / Hari:
-    <input type="number" class="makan" value="15000">
+    ${tabel()}
 
-    Kasbon:
-    <input type="number" class="kasbon red" value="0">
-
-    ${buatTabel()}
-
-    <b>Total Jam Bersih:</b> <span class="jTot">0</span><br>
-    <b>Gaji Bersih:</b> <span class="gTot green">Rp 0</span>
+    <div class="summary">
+      <div class="card">Jam Kotor<br><span class="big jkTot">0</span></div>
+      <div class="card">Jam Istirahat<br><span class="big jrTot">0</span></div>
+      <div class="card">Jam Bersih<br><span class="big jbTot">0</span></div>
+      <div class="card">Tunjangan<br><span class="big green tmTot">Rp 0</span></div>
+      <div class="card">Kasbon<br><span class="big red kbTot">Rp 0</span></div>
+      <div class="card">Gaji Bersih<br><span class="big green gTot">Rp 0</span></div>
+    </div>
   `;
-
-  div.querySelector(".hapus").addEventListener("click",()=>{
-    div.remove(); hitung();
-  });
-
-  list.appendChild(div);
+  d.querySelector('.hapus').onclick=()=>{d.remove()};
+  list.appendChild(d);
   refreshTanggal();
   hitung();
 }
 
 function hitung(){
-  let TJ=0, TG=0;
+  document.querySelectorAll('.karyawan').forEach(k=>{
+    let jk=0,jr=0,jb=0,tm=0;
+    const gj=+k.querySelector('.gaji').value||0;
+    const um=+k.querySelector('.makan').value||0;
+    const kb=+k.querySelector('.kasbon').value||0;
 
-  document.querySelectorAll(".karyawan").forEach(k=>{
-    let jamTot=0, makanTot=0;
-
-    const gaji=+k.querySelector(".gaji").value||0;
-    const uangMakan=+k.querySelector(".makan").value||0;
-    const kasbon=+k.querySelector(".kasbon").value||0;
-
-    k.querySelectorAll("tr[data-i]").forEach(r=>{
-      let kotor=0, istirahat=0, bersih=0;
-
-      const jm=r.querySelector(".jm").value;
-      const mm=r.querySelector(".mm").value;
-      const jk=r.querySelector(".jk").value;
-      const mk=r.querySelector(".mk").value;
-
-      const m1=jamKeMenit(jm,mm);
-      const m2=jamKeMenit(jk,mk);
-
+    k.querySelectorAll('[data-i]').forEach(r=>{
+      let m1=jamKeMenit(r.querySelector('.jm').value,r.querySelector('.mm').value);
+      let m2=jamKeMenit(r.querySelector('.jk').value,r.querySelector('.mk').value);
       if(m1!==null && m2!==null){
-        kotor=(m2-m1)/60;
-
-        // ISTIRAHAT FINAL (FIX)
-        if (kotor > 16) istirahat = 3;
-        else if (kotor > 9) istirahat = 2;
-        else if (kotor > 4) istirahat = 1;
-
-        bersih = kotor - istirahat;
-        if(bersih>0) makanTot+=uangMakan;
+        let kotor=(m2-m1)/60;
+        let ist=0;
+        if(kotor>16) ist=3;
+        else if(kotor>9) ist=2;
+        else if(kotor>4) ist=1;
+        let bersih=kotor-ist;
+        jk+=kotor; jr+=ist; jb+=bersih;
+        tm+=bersih>0?um:0;
+        r.querySelector('.kotor').innerText=kotor.toFixed(2);
+        r.querySelector('.rest').innerText=ist;
+        r.querySelector('.bersih').innerText=bersih.toFixed(2);
       }
-
-      r.querySelector(".kotor").innerText=kotor.toFixed(2);
-      r.querySelector(".rest").innerText=istirahat;
-      r.querySelector(".jam").innerText=bersih.toFixed(2);
-
-      jamTot+=bersih;
     });
 
-    const gajiBersih=(jamTot*gaji)+makanTot-kasbon;
-
-    k.querySelector(".jTot").innerText=jamTot.toFixed(2);
-    k.querySelector(".gTot").innerText="Rp "+gajiBersih.toLocaleString();
-
-    TJ+=jamTot;
-    TG+=gajiBersih;
+    const gaji=(jb*gj)+tm-kb;
+    k.querySelector('.jkTot').innerText=jk.toFixed(2);
+    k.querySelector('.jrTot').innerText=jr.toFixed(2);
+    k.querySelector('.jbTot').innerText=jb.toFixed(2);
+    k.querySelector('.tmTot').innerText='Rp '+tm.toLocaleString();
+    k.querySelector('.kbTot').innerText='Rp '+kb.toLocaleString();
+    k.querySelector('.gTot').innerText='Rp '+gaji.toLocaleString();
   });
-
-  document.getElementById("totJam").innerText=TJ.toFixed(2);
-  document.getElementById("totGaji").innerText="Rp "+TG.toLocaleString();
 }
 
-btn.addEventListener("click",()=>tambahKaryawan("Karyawan Baru"));
-document.body.addEventListener("input",hitung);
-document.body.addEventListener("change",()=>{refreshTanggal();hitung();});
+btnTambah.onclick=()=>tambahKaryawan('Karyawan Baru');
+document.body.addEventListener('input',hitung);
+document.body.addEventListener('change',()=>{refreshTanggal();hitung();});
 
-document.getElementById("tanggalMulai").value =
-  new Date().toISOString().split("T")[0];
-
-for(let i=1;i<=3;i++) tambahKaryawan("Karyawan "+i);
+tanggalMulai.value=new Date().toISOString().split('T')[0];
+for(let i=1;i<=3;i++) tambahKaryawan('Karyawan '+i);
 
 });
 </script>

@@ -1,204 +1,122 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-<meta charset="UTF-8">
-<title>BOQ Tangki - Bill of Quantity</title>
 <style>
     body {
-        font-family: Arial, sans-serif;
-        margin: 20px;
-        background: #f8f9fa;
+        font-family: "Segoe UI", Roboto, Arial, sans-serif;
+        margin: 0;
+        padding: 30px;
+        background: linear-gradient(135deg, #e9ecef, #f8f9fa);
+        color: #212529;
     }
+
     h1 {
         text-align: center;
+        letter-spacing: 2px;
+        margin-bottom: 30px;
+        color: #0d6efd;
     }
+
+    p {
+        background: #ffffff;
+        padding: 15px 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        max-width: 600px;
+    }
+
+    input {
+        font-family: inherit;
+        padding: 4px 6px;
+    }
+
     table {
         width: 100%;
         border-collapse: collapse;
-        background: #fff;
+        background: #ffffff;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        margin-top: 20px;
     }
-    th, td {
-        border: 1px solid #333;
-        padding: 6px;
-        text-align: center;
+
+    th {
+        background: #0d6efd;
+        color: #ffffff;
+        font-weight: 600;
+        padding: 10px;
+        font-size: 14px;
+        border: none;
+    }
+
+    td {
+        border-bottom: 1px solid #dee2e6;
+        padding: 8px;
+        font-size: 13px;
+    }
+
+    tr:hover td {
+        background: #f1f5ff;
+    }
+
+    .category td {
+        background: #dee7ff;
+        font-weight: 700;
+        text-align: left;
+        color: #0a58ca;
+        border-bottom: 2px solid #b6ccff;
+    }
+
+    .total-row td {
+        background: #e9ecef;
+        font-weight: bold;
         font-size: 14px;
     }
-    th {
-        background: #dedede;
-    }
-    td input {
-        width: 100%;
-        border: none;
-        text-align: center;
-    }
+
     .right {
         text-align: right;
     }
-    .category {
-        background: #cfe2ff;
-        font-weight: bold;
-        text-align: left;
+
+    td input {
+        width: 100%;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        padding: 4px;
+        text-align: center;
+        transition: 0.2s;
     }
-    .total-row {
-        background: #e2e3e5;
-        font-weight: bold;
+
+    td input:focus {
+        outline: none;
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 2px rgba(13,110,253,0.2);
     }
+
     button {
-        margin-top: 10px;
-        padding: 8px 12px;
+        margin-top: 15px;
+        padding: 10px 18px;
         font-size: 14px;
+        border: none;
+        border-radius: 6px;
         cursor: pointer;
+        background: #0d6efd;
+        color: #ffffff;
+        transition: 0.2s;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    }
+
+    button:hover {
+        background: #0b5ed7;
+        transform: translateY(-1px);
+    }
+
+    @media print {
+        body {
+            background: white;
+            padding: 0;
+        }
+        table {
+            box-shadow: none;
+        }
+        button {
+            display: none;
+        }
     }
 </style>
-</head>
-
-<body>
-
-<h1>BOQ TANGKI (Bill of Quantity)</h1>
-
-<p>
-<b>Project :</b> <input type="text" style="width:300px"><br>
-<b>Client :</b> <input type="text" style="width:300px"><br>
-<b>Date :</b> <input type="date">
-</p>
-
-<table id="boqTable">
-    <tr>
-        <th>No</th>
-        <th>Uraian Pekerjaan</th>
-        <th>Material</th>
-        <th>Qty</th>
-        <th>Satuan</th>
-        <th>Harga Satuan</th>
-        <th>Total</th>
-    </tr>
-
-    <tr class="category">
-        <td colspan="7">A. FABRIKASI TANGKI</td>
-    </tr>
-
-    <tr>
-        <td>1</td>
-        <td>Shell Plate</td>
-        <td>SS304 / CS</td>
-        <td><input type="number" oninput="calc()"></td>
-        <td>Kg</td>
-        <td><input type="number" oninput="calc()"></td>
-        <td class="right total">0</td>
-    </tr>
-
-    <tr>
-        <td>2</td>
-        <td>Bottom Plate</td>
-        <td>SS304 / CS</td>
-        <td><input type="number" oninput="calc()"></td>
-        <td>Kg</td>
-        <td><input type="number" oninput="calc()"></td>
-        <td class="right total">0</td>
-    </tr>
-
-    <tr>
-        <td>3</td>
-        <td>Top / Cone Roof</td>
-        <td>SS304 / CS</td>
-        <td><input type="number" oninput="calc()"></td>
-        <td>Kg</td>
-        <td><input type="number" oninput="calc()"></td>
-        <td class="right total">0</td>
-    </tr>
-
-    <tr class="category">
-        <td colspan="7">B. AKSESORIS & NOZZLE</td>
-    </tr>
-
-    <tr>
-        <td>4</td>
-        <td>Nozzle In / Out</td>
-        <td>Flange + Pipe</td>
-        <td><input type="number" oninput="calc()"></td>
-        <td>Set</td>
-        <td><input type="number" oninput="calc()"></td>
-        <td class="right total">0</td>
-    </tr>
-
-    <tr>
-        <td>5</td>
-        <td>Manhole</td>
-        <td>Complete</td>
-        <td><input type="number" oninput="calc()"></td>
-        <td>Set</td>
-        <td><input type="number" oninput="calc()"></td>
-        <td class="right total">0</td>
-    </tr>
-
-    <tr class="category">
-        <td colspan="7">C. PEKERJAAN FINISHING</td>
-    </tr>
-
-    <tr>
-        <td>6</td>
-        <td>Welding & Assembly</td>
-        <td>-</td>
-        <td><input type="number" oninput="calc()"></td>
-        <td>LS</td>
-        <td><input type="number" oninput="calc()"></td>
-        <td class="right total">0</td>
-    </tr>
-
-    <tr>
-        <td>7</td>
-        <td>Hydrotest / Leak Test</td>
-        <td>-</td>
-        <td><input type="number" oninput="calc()"></td>
-        <td>LS</td>
-        <td><input type="number" oninput="calc()"></td>
-        <td class="right total">0</td>
-    </tr>
-
-    <tr class="total-row">
-        <td colspan="6" class="right">GRAND TOTAL</td>
-        <td class="right" id="grandTotal">0</td>
-    </tr>
-</table>
-
-<button onclick="addRow()">➕ Tambah Item</button>
-<button onclick="window.print()">🖨 Print / Save PDF</button>
-
-<script>
-function calc() {
-    let totals = document.querySelectorAll(".total");
-    let rows = document.querySelectorAll("#boqTable tr");
-    let grand = 0;
-
-    rows.forEach(row => {
-        let inputs = row.querySelectorAll("input");
-        if (inputs.length === 2) {
-            let qty = parseFloat(inputs[0].value) || 0;
-            let price = parseFloat(inputs[1].value) || 0;
-            let total = qty * price;
-            row.querySelector(".total").innerText = total.toLocaleString();
-            grand += total;
-        }
-    });
-
-    document.getElementById("grandTotal").innerText = grand.toLocaleString();
-}
-
-function addRow() {
-    let table = document.getElementById("boqTable");
-    let row = table.insertRow(table.rows.length - 1);
-
-    row.innerHTML = `
-        <td></td>
-        <td><input></td>
-        <td><input></td>
-        <td><input type="number" oninput="calc()"></td>
-        <td><input></td>
-        <td><input type="number" oninput="calc()"></td>
-        <td class="right total">0</td>
-    `;
-}
-</script>
-
-</body>
-</html>

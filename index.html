@@ -2,285 +2,202 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>PT ATMB - Payroll</title>
-
+<title>BOQ Tangki - Bill of Quantity</title>
 <style>
-:root{
-  --bg1:#0f172a;
-  --bg2:#020617;
-  --card:#ffffff;
-  --accent:#3b82f6;
-  --danger:#dc2626;
-  --text:#0f172a;
-}
-*{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:system-ui,-apple-system,Segoe UI,Roboto;
-  background:linear-gradient(135deg,var(--bg1),var(--bg2));
-  color:white;
-}
-.app{
-  display:grid;
-  grid-template-columns:340px 1fr;
-  min-height:100vh;
-}
-.sidebar{
-  background:rgba(255,255,255,0.06);
-  backdrop-filter:blur(10px);
-  padding:20px;
-  overflow:auto;
-}
-.sidebar h2{
-  margin-top:0;
-  margin-bottom:12px;
-}
-.menu-item{
-  background:rgba(255,255,255,0.12);
-  border-radius:12px;
-  padding:12px;
-  margin-bottom:10px;
-}
-.menu-item.clickable{cursor:pointer}
-.menu-item.clickable:hover{
-  background:rgba(255,255,255,0.22);
-}
-
-.main{
-  padding:30px;
-  overflow:auto;
-}
-.card{
-  background:var(--card);
-  color:var(--text);
-  border-radius:16px;
-  padding:20px;
-  margin-bottom:30px;
-  box-shadow:0 20px 40px rgba(0,0,0,.3);
-}
-h1{margin-top:0}
-input{
-  width:100%;
-  padding:6px;
-}
-button{
-  padding:8px 14px;
-  border:none;
-  border-radius:10px;
-  background:var(--accent);
-  color:white;
-  cursor:pointer;
-}
-button.hapus{background:var(--danger)}
-table{
-  width:100%;
-  border-collapse:collapse;
-  margin-top:10px;
-}
-th,td{
-  border:1px solid #e5e7eb;
-  padding:6px;
-  text-align:center;
-}
-th{background:#f1f5f9}
-.jamnum{width:55px;text-align:center}
-.summary{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:10px;
-  margin-top:15px;
-}
-.sum-box{
-  background:#f8fafc;
-  border-radius:12px;
-  padding:10px;
-  text-align:center;
-}
-.big{font-weight:700}
-.green{color:#16a34a}
-.red{color:#dc2626}
-hr{border:none;border-top:1px solid rgba(255,255,255,.25);margin:18px 0}
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        background: #f8f9fa;
+    }
+    h1 {
+        text-align: center;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background: #fff;
+    }
+    th, td {
+        border: 1px solid #333;
+        padding: 6px;
+        text-align: center;
+        font-size: 14px;
+    }
+    th {
+        background: #dedede;
+    }
+    td input {
+        width: 100%;
+        border: none;
+        text-align: center;
+    }
+    .right {
+        text-align: right;
+    }
+    .category {
+        background: #cfe2ff;
+        font-weight: bold;
+        text-align: left;
+    }
+    .total-row {
+        background: #e2e3e5;
+        font-weight: bold;
+    }
+    button {
+        margin-top: 10px;
+        padding: 8px 12px;
+        font-size: 14px;
+        cursor: pointer;
+    }
 </style>
 </head>
 
 <body>
-<div class="app">
 
-  <!-- SIDEBAR -->
-  <div class="sidebar">
-    <h2>📋 Ringkasan Total Karyawan</h2>
-    <div id="menuKaryawan"></div>
+<h1>BOQ TANGKI (Bill of Quantity)</h1>
 
-    <hr>
+<p>
+<b>Project :</b> <input type="text" style="width:300px"><br>
+<b>Client :</b> <input type="text" style="width:300px"><br>
+<b>Date :</b> <input type="date">
+</p>
 
-    <h2>📊 Ringkasan Total</h2>
-    <div id="menuTotal"></div>
-  </div>
+<table id="boqTable">
+    <tr>
+        <th>No</th>
+        <th>Uraian Pekerjaan</th>
+        <th>Material</th>
+        <th>Qty</th>
+        <th>Satuan</th>
+        <th>Harga Satuan</th>
+        <th>Total</th>
+    </tr>
 
-  <!-- MAIN -->
-  <div class="main">
-    <h1>PT ATMB<br><small>Payroll 2 Minggu</small></h1>
+    <tr class="category">
+        <td colspan="7">A. FABRIKASI TANGKI</td>
+    </tr>
 
-    <div class="card">
-      Tanggal Mulai
-      <input type="date" id="tanggalMulai"><br><br>
-      <button id="btnTambah">+ Tambah Karyawan</button>
-    </div>
+    <tr>
+        <td>1</td>
+        <td>Shell Plate</td>
+        <td>SS304 / CS</td>
+        <td><input type="number" oninput="calc()"></td>
+        <td>Kg</td>
+        <td><input type="number" oninput="calc()"></td>
+        <td class="right total">0</td>
+    </tr>
 
-    <div id="list"></div>
-  </div>
+    <tr>
+        <td>2</td>
+        <td>Bottom Plate</td>
+        <td>SS304 / CS</td>
+        <td><input type="number" oninput="calc()"></td>
+        <td>Kg</td>
+        <td><input type="number" oninput="calc()"></td>
+        <td class="right total">0</td>
+    </tr>
 
-</div>
+    <tr>
+        <td>3</td>
+        <td>Top / Cone Roof</td>
+        <td>SS304 / CS</td>
+        <td><input type="number" oninput="calc()"></td>
+        <td>Kg</td>
+        <td><input type="number" oninput="calc()"></td>
+        <td class="right total">0</td>
+    </tr>
+
+    <tr class="category">
+        <td colspan="7">B. AKSESORIS & NOZZLE</td>
+    </tr>
+
+    <tr>
+        <td>4</td>
+        <td>Nozzle In / Out</td>
+        <td>Flange + Pipe</td>
+        <td><input type="number" oninput="calc()"></td>
+        <td>Set</td>
+        <td><input type="number" oninput="calc()"></td>
+        <td class="right total">0</td>
+    </tr>
+
+    <tr>
+        <td>5</td>
+        <td>Manhole</td>
+        <td>Complete</td>
+        <td><input type="number" oninput="calc()"></td>
+        <td>Set</td>
+        <td><input type="number" oninput="calc()"></td>
+        <td class="right total">0</td>
+    </tr>
+
+    <tr class="category">
+        <td colspan="7">C. PEKERJAAN FINISHING</td>
+    </tr>
+
+    <tr>
+        <td>6</td>
+        <td>Welding & Assembly</td>
+        <td>-</td>
+        <td><input type="number" oninput="calc()"></td>
+        <td>LS</td>
+        <td><input type="number" oninput="calc()"></td>
+        <td class="right total">0</td>
+    </tr>
+
+    <tr>
+        <td>7</td>
+        <td>Hydrotest / Leak Test</td>
+        <td>-</td>
+        <td><input type="number" oninput="calc()"></td>
+        <td>LS</td>
+        <td><input type="number" oninput="calc()"></td>
+        <td class="right total">0</td>
+    </tr>
+
+    <tr class="total-row">
+        <td colspan="6" class="right">GRAND TOTAL</td>
+        <td class="right" id="grandTotal">0</td>
+    </tr>
+</table>
+
+<button onclick="addRow()">➕ Tambah Item</button>
+<button onclick="window.print()">🖨 Print / Save PDF</button>
 
 <script>
-document.addEventListener("DOMContentLoaded",()=>{
+function calc() {
+    let totals = document.querySelectorAll(".total");
+    let rows = document.querySelectorAll("#boqTable tr");
+    let grand = 0;
 
-const hari=["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
-const list=document.getElementById("list");
-const menu=document.getElementById("menuKaryawan");
-const menuTotal=document.getElementById("menuTotal");
-
-function ddmmyy(d){
-  return String(d.getDate()).padStart(2,'0')+'-'+
-         String(d.getMonth()+1).padStart(2,'0')+'-'+
-         String(d.getFullYear()).slice(-2);
-}
-function menit(j,m){
-  j=Number(j); m=Number(m);
-  if(isNaN(j)||isNaN(m)||m>59||j<0) return null;
-  return j*60+m;
-}
-function tabel(){
-  let t=`<table>
-  <tr>
-    <th>Tgl</th><th>Hari</th>
-    <th colspan="2">Masuk</th>
-    <th colspan="2">Pulang</th>
-    <th>Istirahat</th>
-    <th>x2</th>
-    <th>Jam Bersih</th>
-  </tr>`;
-  for(let i=0;i<14;i++){
-    t+=`
-    <tr data-i="${i}">
-      <td class="tgl"></td>
-      <td class="hari"></td>
-      <td><input class="jamnum jm"></td>
-      <td><input class="jamnum mm"></td>
-      <td><input class="jamnum jk"></td>
-      <td><input class="jamnum mk"></td>
-      <td><input class="jamnum rest" value="0"></td>
-      <td><input type="checkbox" class="x2"></td>
-      <td class="bersih">0</td>
-    </tr>`;
-  }
-  return t+"</table>";
-}
-
-function refreshTanggal(){
-  const s=tanggalMulai.value;
-  document.querySelectorAll('[data-i]').forEach(r=>{
-    const d=new Date(s);
-    d.setDate(d.getDate()+Number(r.dataset.i));
-    r.querySelector('.tgl').innerText=ddmmyy(d);
-    r.querySelector('.hari').innerText=hari[d.getDay()];
-  });
-}
-
-function tambahKaryawan(nama){
-  const d=document.createElement("div");
-  d.className="card karyawan";
-
-  d.innerHTML=`
-    <b>Nama Karyawan</b>
-    <input class="nama" value="${nama}">
-    <button class="hapus">Hapus</button><br><br>
-
-    Gaji/Jam <input class="gaji" type="number" value="20000">
-    Tunjangan/Hari <input class="makan" type="number" value="15000">
-    Kasbon <input class="kasbon red" type="number" value="0">
-
-    ${tabel()}
-
-    <div class="summary">
-      <div class="sum-box">Total Jam<br><span class="big jb">0</span></div>
-      <div class="sum-box">Tunjangan<br><span class="big green tm">Rp 0</span></div>
-      <div class="sum-box">Kasbon<br><span class="big red kb">Rp 0</span></div>
-      <div class="sum-box">Total Gaji<br><span class="big green gb">Rp 0</span></div>
-    </div>
-  `;
-  d.querySelector(".hapus").onclick=()=>{d.remove(); renderMenu()};
-  list.appendChild(d);
-  refreshTanggal();
-  renderMenu();
-  hitung();
-}
-
-function hitung(){
-  document.querySelectorAll(".karyawan").forEach(k=>{
-    let jamTot=0, tunj=0;
-    const gj=+k.querySelector(".gaji").value||0;
-    const mkn=+k.querySelector(".makan").value||0;
-    const kb=+k.querySelector(".kasbon").value||0;
-
-    k.querySelectorAll("[data-i]").forEach(r=>{
-      let m1=menit(r.querySelector(".jm").value,r.querySelector(".mm").value);
-      let m2=menit(r.querySelector(".jk").value,r.querySelector(".mk").value);
-      let rest=+r.querySelector(".rest").value||0;
-      let x2=r.querySelector(".x2").checked;
-
-      let bersih=0;
-      if(m1!==null && m2!==null){
-        bersih=((m2-m1)/60)-rest;
-        if(bersih<0) bersih=0;
-        if(x2) bersih*=2;
-        jamTot+=bersih;
-        tunj+=bersih>0?mkn:0;
-      }
-      r.querySelector(".bersih").innerText=bersih.toFixed(2);
+    rows.forEach(row => {
+        let inputs = row.querySelectorAll("input");
+        if (inputs.length === 2) {
+            let qty = parseFloat(inputs[0].value) || 0;
+            let price = parseFloat(inputs[1].value) || 0;
+            let total = qty * price;
+            row.querySelector(".total").innerText = total.toLocaleString();
+            grand += total;
+        }
     });
 
-    const gaji=(jamTot*gj)+tunj-kb;
-    k.querySelector(".jb").innerText=jamTot.toFixed(2);
-    k.querySelector(".tm").innerText="Rp "+tunj.toLocaleString();
-    k.querySelector(".kb").innerText="Rp "+kb.toLocaleString();
-    k.querySelector(".gb").innerText="Rp "+gaji.toLocaleString();
-  });
-  renderMenu();
+    document.getElementById("grandTotal").innerText = grand.toLocaleString();
 }
 
-function renderMenu(){
-  menu.innerHTML="";
-  menuTotal.innerHTML="";
+function addRow() {
+    let table = document.getElementById("boqTable");
+    let row = table.insertRow(table.rows.length - 1);
 
-  document.querySelectorAll(".karyawan").forEach(k=>{
-    const nama=k.querySelector(".nama").value;
-    const jam=k.querySelector(".jb").innerText;
-    const gaji=k.querySelector(".gb").innerText;
-
-    // MENU ATAS (NAVIGASI)
-    const item=document.createElement("div");
-    item.className="menu-item clickable";
-    item.innerHTML=`<b>${nama}</b><br>Total Jam : ${jam}<br>Total Gaji : ${gaji}`;
-    item.onclick=()=>k.scrollIntoView({behavior:"smooth"});
-    menu.appendChild(item);
-
-    // MENU BAWAH (REKAP FINAL)
-    const total=document.createElement("div");
-    total.className="menu-item";
-    total.innerHTML=`<b>${nama}</b><br>Total Jam : ${jam}<br>Total Gaji : ${gaji}`;
-    menuTotal.appendChild(total);
-  });
+    row.innerHTML = `
+        <td></td>
+        <td><input></td>
+        <td><input></td>
+        <td><input type="number" oninput="calc()"></td>
+        <td><input></td>
+        <td><input type="number" oninput="calc()"></td>
+        <td class="right total">0</td>
+    `;
 }
-
-btnTambah.onclick=()=>tambahKaryawan("Karyawan Baru");
-document.body.addEventListener("input",hitung);
-document.body.addEventListener("change",()=>{refreshTanggal();hitung();});
-
-tanggalMulai.value=new Date().toISOString().split("T")[0];
-for(let i=1;i<=3;i++) tambahKaryawan("Karyawan "+i);
-
-});
 </script>
 
 </body>

@@ -1,122 +1,273 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>BOQ Tangki - Company Version</title>
+
 <style>
+/* ===== GLOBAL ===== */
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: linear-gradient(135deg, #eef2f7, #f9fbfd);
+    margin: 0;
+    padding: 30px;
+    color: #212529;
+}
+
+.container {
+    max-width: 1200px;
+    margin: auto;
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+}
+
+/* ===== HEADER ===== */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 3px solid #0d6efd;
+    padding-bottom: 15px;
+    margin-bottom: 25px;
+}
+
+.company {
+    font-size: 22px;
+    font-weight: 700;
+    color: #0d6efd;
+    letter-spacing: 1px;
+}
+
+.title {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+/* ===== INFO ===== */
+.info {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.info div {
+    font-size: 14px;
+}
+
+.info input {
+    width: 100%;
+    padding: 6px;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+}
+
+/* ===== TABLE ===== */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+th {
+    background: #0d6efd;
+    color: white;
+    padding: 10px;
+    font-size: 14px;
+}
+
+td {
+    border-bottom: 1px solid #dee2e6;
+    padding: 8px;
+    font-size: 13px;
+    text-align: center;
+}
+
+.category td {
+    background: #e7f0ff;
+    font-weight: bold;
+    text-align: left;
+    color: #084298;
+}
+
+.total-row td {
+    background: #f1f3f5;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+td input {
+    width: 100%;
+    padding: 5px;
+    border-radius: 4px;
+    border: 1px solid #ced4da;
+    text-align: center;
+}
+
+.right {
+    text-align: right;
+}
+
+/* ===== BUTTON ===== */
+.actions {
+    margin-top: 20px;
+}
+
+button {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 6px;
+    background: #0d6efd;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+button:hover {
+    background: #0b5ed7;
+}
+
+/* ===== PRINT ===== */
+@media print {
     body {
-        font-family: "Segoe UI", Roboto, Arial, sans-serif;
-        margin: 0;
-        padding: 30px;
-        background: linear-gradient(135deg, #e9ecef, #f8f9fa);
-        color: #212529;
+        background: white;
+        padding: 0;
     }
-
-    h1 {
-        text-align: center;
-        letter-spacing: 2px;
-        margin-bottom: 30px;
-        color: #0d6efd;
+    .container {
+        box-shadow: none;
+        padding: 0;
     }
-
-    p {
-        background: #ffffff;
-        padding: 15px 20px;
-        border-radius: 8px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-        max-width: 600px;
+    .actions {
+        display: none;
     }
-
-    input {
-        font-family: inherit;
-        padding: 4px 6px;
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        background: #ffffff;
-        border-radius: 10px;
-        overflow: hidden;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-        margin-top: 20px;
-    }
-
-    th {
-        background: #0d6efd;
-        color: #ffffff;
-        font-weight: 600;
-        padding: 10px;
-        font-size: 14px;
-        border: none;
-    }
-
-    td {
-        border-bottom: 1px solid #dee2e6;
-        padding: 8px;
-        font-size: 13px;
-    }
-
-    tr:hover td {
-        background: #f1f5ff;
-    }
-
-    .category td {
-        background: #dee7ff;
-        font-weight: 700;
-        text-align: left;
-        color: #0a58ca;
-        border-bottom: 2px solid #b6ccff;
-    }
-
-    .total-row td {
-        background: #e9ecef;
-        font-weight: bold;
-        font-size: 14px;
-    }
-
-    .right {
-        text-align: right;
-    }
-
-    td input {
-        width: 100%;
-        border: 1px solid #ced4da;
-        border-radius: 4px;
-        padding: 4px;
-        text-align: center;
-        transition: 0.2s;
-    }
-
-    td input:focus {
-        outline: none;
-        border-color: #0d6efd;
-        box-shadow: 0 0 0 2px rgba(13,110,253,0.2);
-    }
-
-    button {
-        margin-top: 15px;
-        padding: 10px 18px;
-        font-size: 14px;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        background: #0d6efd;
-        color: #ffffff;
-        transition: 0.2s;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-    }
-
-    button:hover {
-        background: #0b5ed7;
-        transform: translateY(-1px);
-    }
-
-    @media print {
-        body {
-            background: white;
-            padding: 0;
-        }
-        table {
-            box-shadow: none;
-        }
-        button {
-            display: none;
-        }
-    }
+}
 </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <div class="company">YOUR COMPANY NAME</div>
+        <div class="title">BILL OF QUANTITY – TANK WORK</div>
+    </div>
+
+    <div class="info">
+        <div>Project<br><input></div>
+        <div>Client<br><input></div>
+        <div>Date<br><input type="date"></div>
+    </div>
+
+    <table id="boq">
+        <tr>
+            <th>No</th>
+            <th>Description</th>
+            <th>Material</th>
+            <th>Qty</th>
+            <th>Unit</th>
+            <th>Unit Price</th>
+            <th>Total</th>
+        </tr>
+
+        <tr class="category">
+            <td colspan="7">A. TANK FABRICATION</td>
+        </tr>
+
+        <tr>
+            <td>1</td>
+            <td>Shell Plate</td>
+            <td>SS / CS</td>
+            <td><input type="number" oninput="calc()"></td>
+            <td>Kg</td>
+            <td><input type="number" oninput="calc()"></td>
+            <td class="right total">0</td>
+        </tr>
+
+        <tr>
+            <td>2</td>
+            <td>Bottom Plate</td>
+            <td>SS / CS</td>
+            <td><input type="number" oninput="calc()"></td>
+            <td>Kg</td>
+            <td><input type="number" oninput="calc()"></td>
+            <td class="right total">0</td>
+        </tr>
+
+        <tr class="category">
+            <td colspan="7">B. ACCESSORIES</td>
+        </tr>
+
+        <tr>
+            <td>3</td>
+            <td>Nozzle & Flange</td>
+            <td>Complete</td>
+            <td><input type="number" oninput="calc()"></td>
+            <td>Set</td>
+            <td><input type="number" oninput="calc()"></td>
+            <td class="right total">0</td>
+        </tr>
+
+        <tr class="category">
+            <td colspan="7">C. TESTING & FINISHING</td>
+        </tr>
+
+        <tr>
+            <td>4</td>
+            <td>Welding & Assembly</td>
+            <td>-</td>
+            <td><input type="number" oninput="calc()"></td>
+            <td>LS</td>
+            <td><input type="number" oninput="calc()"></td>
+            <td class="right total">0</td>
+        </tr>
+
+        <tr class="total-row">
+            <td colspan="6" class="right">GRAND TOTAL</td>
+            <td class="right" id="grand">0</td>
+        </tr>
+    </table>
+
+    <div class="actions">
+        <button onclick="addRow()">Tambah Item</button>
+        <button onclick="window.print()">Print / PDF</button>
+    </div>
+
+</div>
+
+<script>
+function calc() {
+    let grand = 0;
+    document.querySelectorAll("#boq tr").forEach(row => {
+        let inputs = row.querySelectorAll("input");
+        if (inputs.length === 2) {
+            let qty = inputs[0].value || 0;
+            let price = inputs[1].value || 0;
+            let total = qty * price;
+            row.querySelector(".total").innerText = total.toLocaleString();
+            grand += total;
+        }
+    });
+    document.getElementById("grand").innerText = grand.toLocaleString();
+}
+
+function addRow() {
+    let table = document.getElementById("boq");
+    let row = table.insertRow(table.rows.length - 1);
+    row.innerHTML = `
+        <td></td>
+        <td><input></td>
+        <td><input></td>
+        <td><input type="number" oninput="calc()"></td>
+        <td><input></td>
+        <td><input type="number" oninput="calc()"></td>
+        <td class="right total">0</td>
+    `;
+}
+</script>
+
+</body>
+</html>

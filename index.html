@@ -1,273 +1,297 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<title>BOQ Tangki - Company Version</title>
-
-<style>
-/* ===== GLOBAL ===== */
-body {
-    font-family: "Segoe UI", Arial, sans-serif;
-    background: linear-gradient(135deg, #eef2f7, #f9fbfd);
-    margin: 0;
-    padding: 30px;
-    color: #212529;
-}
-
-.container {
-    max-width: 1200px;
-    margin: auto;
-    background: #ffffff;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 12px 30px rgba(0,0,0,0.08);
-}
-
-/* ===== HEADER ===== */
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 3px solid #0d6efd;
-    padding-bottom: 15px;
-    margin-bottom: 25px;
-}
-
-.company {
-    font-size: 22px;
-    font-weight: 700;
-    color: #0d6efd;
-    letter-spacing: 1px;
-}
-
-.title {
-    font-size: 20px;
-    font-weight: 600;
-}
-
-/* ===== INFO ===== */
-.info {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 15px;
-    margin-bottom: 20px;
-}
-
-.info div {
-    font-size: 14px;
-}
-
-.info input {
-    width: 100%;
-    padding: 6px;
-    border: 1px solid #ced4da;
-    border-radius: 6px;
-}
-
-/* ===== TABLE ===== */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 15px;
-}
-
-th {
-    background: #0d6efd;
-    color: white;
-    padding: 10px;
-    font-size: 14px;
-}
-
-td {
-    border-bottom: 1px solid #dee2e6;
-    padding: 8px;
-    font-size: 13px;
-    text-align: center;
-}
-
-.category td {
-    background: #e7f0ff;
-    font-weight: bold;
-    text-align: left;
-    color: #084298;
-}
-
-.total-row td {
-    background: #f1f3f5;
-    font-weight: bold;
-    font-size: 14px;
-}
-
-td input {
-    width: 100%;
-    padding: 5px;
-    border-radius: 4px;
-    border: 1px solid #ced4da;
-    text-align: center;
-}
-
-.right {
-    text-align: right;
-}
-
-/* ===== BUTTON ===== */
-.actions {
-    margin-top: 20px;
-}
-
-button {
-    padding: 10px 18px;
-    border: none;
-    border-radius: 6px;
-    background: #0d6efd;
-    color: white;
-    font-size: 14px;
-    cursor: pointer;
-    margin-right: 10px;
-}
-
-button:hover {
-    background: #0b5ed7;
-}
-
-/* ===== PRINT ===== */
-@media print {
-    body {
-        background: white;
-        padding: 0;
-    }
-    .container {
-        box-shadow: none;
-        padding: 0;
-    }
-    .actions {
-        display: none;
-    }
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payroll 2 Minggu - 13 Karyawan</title>
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height:100vh; padding:20px; }
+        .container { max-width:1400px; margin:0 auto; background:white; border-radius:20px; box-shadow:0 20px 40px rgba(0,0,0,0.1); overflow:hidden; }
+        .header { background:linear-gradient(45deg, #FF6B6B, #4ECDC4); color:white; padding:30px; text-align:center; }
+        .tabs { display:flex; background:#f8f9fa; border-bottom:2px solid #dee2e6; }
+        .tab { flex:1; padding:15px; text-align:center; cursor:pointer; background:none; border:none; font-size:16px; font-weight:500; transition:all 0.3s; }
+        .tab.active { background:white; border-bottom:3px solid #007bff; color:#007bff; }
+        .content { padding:30px; }
+        table { width:100%; border-collapse:collapse; margin:20px 0; background:white; border-radius:10px; overflow:hidden; box-shadow:0 5px 15px rgba(0,0,0,0.1); }
+        th, td { padding:12px 15px; text-align:left; border-bottom:1px solid #eee; }
+        th { background:linear-gradient(45deg, #667eea, #764ba2); color:white; font-weight:600; }
+        .hadir { background:#d4edda; color:#155724; }
+        .izin { background:#fff3cd; color:#856404; }
+        .sakit { background:#f8d7da; color:#721c24; }
+        .alpha { background:#f5c6cb; color:#721c24; font-weight:bold; }
+        .input-select { padding:8px; border:2px solid #ddd; border-radius:8px; font-size:14px; min-width:80px; }
+        .summary { display:grid; grid-template-columns:repeat(auto-fit, minmax(250px,1fr)); gap:20px; margin:30px 0; }
+        .card { background:linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color:white; padding:25px; border-radius:15px; text-align:center; }
+        .total { font-size:24px; font-weight:bold; }
+        button { background:#28a745; color:white; border:none; padding:12px 25px; border-radius:25px; cursor:pointer; font-size:16px; transition:all 0.3s; }
+        button:hover { transform:translateY(-2px); box-shadow:0 5px 15px rgba(40,167,69,0.4); }
+        @media (max-width:768px) { .tabs { flex-direction:column; } table { font-size:12px; } .input-select { min-width:60px; } }
+    </style>
 </head>
-
 <body>
-
-<div class="container">
-
-    <div class="header">
-        <div class="company">YOUR COMPANY NAME</div>
-        <div class="title">BILL OF QUANTITY – TANK WORK</div>
+    <div class="container">
+        <div class="header">
+            <h1>💼 PAYROLL 2 MINGGU</h1>
+            <p>13 Karyawan | Periode 1-14 | Auto Hitung</p>
+        </div>
+        
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('absensi')">📋 Absensi</button>
+            <button class="tab" onclick="showTab('hitung')">🧮 Pengitung</button>
+            <button class="tab" onclick="showTab('gaji')">💰 Daftar Gaji</button>
+            <button class="tab" onclick="showTab('dashboard')">📊 Dashboard</button>
+        </div>
+        
+        <div class="content">
+            <!-- ABSENSI TAB -->
+            <div id="absensi" class="tab-content">
+                <table id="absensiTable">
+                    <thead>
+                        <tr>
+                            <th>NO</th>
+                            <th>Nama</th>
+                            <th>Posisi</th>
+                            <th colspan="14">Hari (1-14)</th>
+                            <th>Hadir</th>
+                            <th>Ijin</th>
+                            <th>Total Jam</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            
+            <!-- PENGHITUNG TAB -->
+            <div id="hitung" class="tab-content" style="display:none;">
+                <table id="hitungTable">
+                    <thead><tr><th>NO</th><th>Nama</th><th>Hadir</th><th>Ijin</th><th>Total Jam</th><th>Upah/Jam</th><th>Gaji Kotor</th><th>Potongan 5%</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+                <div style="margin-top:20px;">
+                    <label>Upah/Jam: <input type="number" id="upahJam" value="25000" style="padding:10px; border-radius:8px; border:2px solid #ddd; width:120px;"></label>
+                    <button onclick="updateUpah()">🔄 Update Upah</button>
+                </div>
+            </div>
+            
+            <!-- GAJI TAB -->
+            <div id="gaji" class="tab-content" style="display:none;">
+                <table id="gajiTable">
+                    <thead><tr><th>NO</th><th>Nama</th><th>Gaji Kotor</th><th>Potongan</th><th>Gaji Bersih</th><th>THR 10%</th><th>Bonus</th><th>Total Bayar</th><th>Status</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+                <button onclick="printGaji()" style="margin-top:20px;">🖨️ Print Daftar Gaji</button>
+            </div>
+            
+            <!-- DASHBOARD -->
+            <div id="dashboard" class="tab-content" style="display:none;">
+                <div class="summary">
+                    <div class="card">
+                        <h3>Total Gaji</h3>
+                        <div class="total" id="totalGaji">Rp 0</div>
+                    </div>
+                    <div class="card">
+                        <h3>Rata-rata</h3>
+                        <div class="total" id="rataGaji">Rp 0</div>
+                    </div>
+                    <div class="card">
+                        <h3>Terbaik</h3>
+                        <div class="total" id="karyawanTerbaik">-</div>
+                    </div>
+                    <div class="card">
+                        <h3>Total Jam Kerja</h3>
+                        <div class="total" id="totalJam">0 jam</div>
+                    </div>
+                </div>
+                <button onclick="exportExcel()" style="margin-top:20px;">📥 Export Excel</button>
+            </div>
+        </div>
     </div>
 
-    <div class="info">
-        <div>Project<br><input></div>
-        <div>Client<br><input></div>
-        <div>Date<br><input type="date"></div>
-    </div>
+    <script>
+        const karyawan = [
+            'Ahmad', 'Budi', 'Citra', 'Dedi', 'Eka', 'Fajar', 'Gina', 'Hadi', 'Ira', 'Joko', 'Kartika', 'Luki', 'Mira'
+        ];
+        let upahJam = 25000;
+        let absensiData = {};
 
-    <table id="boq">
-        <tr>
-            <th>No</th>
-            <th>Description</th>
-            <th>Material</th>
-            <th>Qty</th>
-            <th>Unit</th>
-            <th>Unit Price</th>
-            <th>Total</th>
-        </tr>
-
-        <tr class="category">
-            <td colspan="7">A. TANK FABRICATION</td>
-        </tr>
-
-        <tr>
-            <td>1</td>
-            <td>Shell Plate</td>
-            <td>SS / CS</td>
-            <td><input type="number" oninput="calc()"></td>
-            <td>Kg</td>
-            <td><input type="number" oninput="calc()"></td>
-            <td class="right total">0</td>
-        </tr>
-
-        <tr>
-            <td>2</td>
-            <td>Bottom Plate</td>
-            <td>SS / CS</td>
-            <td><input type="number" oninput="calc()"></td>
-            <td>Kg</td>
-            <td><input type="number" oninput="calc()"></td>
-            <td class="right total">0</td>
-        </tr>
-
-        <tr class="category">
-            <td colspan="7">B. ACCESSORIES</td>
-        </tr>
-
-        <tr>
-            <td>3</td>
-            <td>Nozzle & Flange</td>
-            <td>Complete</td>
-            <td><input type="number" oninput="calc()"></td>
-            <td>Set</td>
-            <td><input type="number" oninput="calc()"></td>
-            <td class="right total">0</td>
-        </tr>
-
-        <tr class="category">
-            <td colspan="7">C. TESTING & FINISHING</td>
-        </tr>
-
-        <tr>
-            <td>4</td>
-            <td>Welding & Assembly</td>
-            <td>-</td>
-            <td><input type="number" oninput="calc()"></td>
-            <td>LS</td>
-            <td><input type="number" oninput="calc()"></td>
-            <td class="right total">0</td>
-        </tr>
-
-        <tr class="total-row">
-            <td colspan="6" class="right">GRAND TOTAL</td>
-            <td class="right" id="grand">0</td>
-        </tr>
-    </table>
-
-    <div class="actions">
-        <button onclick="addRow()">Tambah Item</button>
-        <button onclick="window.print()">Print / PDF</button>
-    </div>
-
-</div>
-
-<script>
-function calc() {
-    let grand = 0;
-    document.querySelectorAll("#boq tr").forEach(row => {
-        let inputs = row.querySelectorAll("input");
-        if (inputs.length === 2) {
-            let qty = inputs[0].value || 0;
-            let price = inputs[1].value || 0;
-            let total = qty * price;
-            row.querySelector(".total").innerText = total.toLocaleString();
-            grand += total;
+        // Inisialisasi
+        window.onload = function() {
+            initAbsensi();
+            updateAll();
         }
-    });
-    document.getElementById("grand").innerText = grand.toLocaleString();
-}
 
-function addRow() {
-    let table = document.getElementById("boq");
-    let row = table.insertRow(table.rows.length - 1);
-    row.innerHTML = `
-        <td></td>
-        <td><input></td>
-        <td><input></td>
-        <td><input type="number" oninput="calc()"></td>
-        <td><input></td>
-        <td><input type="number" oninput="calc()"></td>
-        <td class="right total">0</td>
-    `;
-}
-</script>
+        function initAbsensi() {
+            const tbody = document.querySelector('#absensiTable tbody');
+            karyawan.forEach((nama, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index+1}</td>
+                    <td>${nama}</td>
+                    <td>Staff</td>
+                    ${Array(14).fill().map(() => `<td><select class="input-select" onchange="updateAbsensi(${index}, this.value)"><option></option><option>H</option><option>I</option><option>S</option><option>A</option></select></td>`).join('')}
+                    <td id="hadir${index}">0</td>
+                    <td id="izin${index}">0</td>
+                    <td id="jam${index}">0</td>
+                `;
+                tbody.appendChild(row);
+                absensiData[nama] = Array(14).fill('');
+            });
+        }
 
+        function updateAbsensi(index, value) {
+            absensiData[karyawan[index]][event.target.cellIndex - 3] = value;
+            updateRow(index);
+            updateAll();
+        }
+
+        function updateRow(index) {
+            const data = absensiData[karyawan[index]];
+            const hadir = data.filter(v => v === 'H').length;
+            const izin = data.filter(v => v === 'I').length;
+            const totalJam = (hadir * 8) + (izin * 4);
+            
+            document.getElementById(`hadir${index}`).textContent = hadir;
+            document.getElementById(`izin${index}`).textContent = izin;
+            document.getElementById(`jam${index}`).textContent = totalJam;
+        }
+
+        function updateAll() {
+            updateHitung();
+            updateGaji();
+            updateDashboard();
+            colorCodeAbsensi();
+        }
+
+        function colorCodeAbsensi() {
+            document.querySelectorAll('#absensiTable select').forEach(select => {
+                const cell = select.parentElement;
+                cell.className = '';
+                if (select.value === 'H') cell.classList.add('hadir');
+                if (select.value === 'I') cell.classList.add('izin');
+                if (select.value === 'S') cell.classList.add('sakit');
+                if (select.value === 'A') cell.classList.add('alpha');
+            });
+        }
+
+        function updateHitung() {
+            const tbody = document.querySelector('#hitungTable tbody');
+            tbody.innerHTML = '';
+            karyawan.forEach((nama, i) => {
+                const data = absensiData[nama];
+                const hadir = data.filter(v => v === 'H').length;
+                const izin = data.filter(v => v === 'I').length;
+                const jam = (hadir * 8) + (izin * 4);
+                const gajiKotor = jam * upahJam;
+                const potongan = gajiKotor * 0.05;
+                
+                const row = `
+                    <tr>
+                        <td>${i+1}</td>
+                        <td>${nama}</td>
+                        <td>${hadir}</td>
+                        <td>${izin}</td>
+                        <td>${jam}</td>
+                        <td>Rp ${upahJam.toLocaleString()}</td>
+                        <td>Rp ${gajiKotor.toLocaleString()}</td>
+                        <td>Rp ${potongan.toLocaleString()}</td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        }
+
+        function updateGaji() {
+            const tbody = document.querySelector('#gajiTable tbody');
+            tbody.innerHTML = '';
+            let total = 0;
+            
+            karyawan.forEach((nama, i) => {
+                const data = absensiData[nama];
+                const hadir = data.filter(v => v === 'H').length;
+                const izin = data.filter(v => v === 'I').length;
+                const jam = (hadir * 8) + (izin * 4);
+                const gajiKotor = jam * upahJam;
+                const potongan = gajiKotor * 0.05;
+                const bersih = gajiKotor - potongan;
+                const thr = bersih * 0.1;
+                const bonus = bersih > 2000000 ? 50000 : 0;
+                const totalBayar = bersih + thr + bonus;
+                total += totalBayar;
+                
+                const status = totalBayar > 2500000 ? 'VIP 💎' : 'Reguler ✅';
+                
+                const row = `
+                    <tr>
+                        <td>${i+1}</td>
+                        <td>${nama}</td>
+                        <td>Rp ${gajiKotor.toLocaleString()}</td>
+                        <td>Rp ${potongan.toLocaleString()}</td>
+                        <td>Rp ${bersih.toLocaleString()}</td>
+                        <td>Rp ${thr.toLocaleString()}</td>
+                        <td>Rp ${bonus.toLocaleString()}</td>
+                        <td style="font-weight:bold; color:#28a745;">Rp ${totalBayar.toLocaleString()}</td>
+                        <td>${status}</td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        }
+
+        function updateDashboard() {
+            let totalGaji = 0, totalJamKerja = 0, maxBayar = 0, bestKaryawan = '';
+            
+            karyawan.forEach(nama => {
+                const data = absensiData[nama];
+                const hadir = data.filter(v => v === 'H').length;
+                const izin = data.filter(v => v === 'I').length;
+                const jam = (hadir * 8) + (izin * 4);
+                const gajiKotor = jam * upahJam;
+                const potongan = gajiKotor * 0.05;
+                const bersih = gajiKotor - potongan;
+                const thr = bersih * 0.1;
+                const bonus = bersih > 2000000 ? 50000 : 0;
+                const totalBayar = bersih + thr + bonus;
+                
+                totalGaji += totalBayar;
+                totalJamKerja += jam;
+                
+                if (totalBayar > maxBayar) {
+                    maxBayar = totalBayar;
+                    bestKaryawan = nama;
+                }
+            });
+            
+            document.getElementById('totalGaji').textContent = `Rp ${totalGaji.toLocaleString()}`;
+            document.getElementById('rataGaji').textContent = `Rp ${Math.round(totalGaji/13).toLocaleString()}`;
+            document.getElementById('karyawanTerbaik').textContent = bestKaryawan;
+            document.getElementById('totalJam').textContent = `${totalJamKerja} jam`;
+        }
+
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(tabName).style.display = 'block';
+            event.target.classList.add('active');
+            updateAll();
+        }
+
+        function updateUpah() {
+            upahJam = parseInt(document.getElementById('upahJam').value);
+            updateAll();
+        }
+
+        function printGaji() {
+            window.print();
+        }
+
+        function exportExcel() {
+            const data = karyawan.map((nama, i) => {
+                // Logic export - simplified
+                return { nama, total: 'Rp 2.000.000' };
+            });
+            alert('Export Excel siap! (Fitur lengkap butuh library).');
+        }
+    </script>
 </body>
 </html>
